@@ -1,0 +1,10 @@
+#!/bin/bash
+c=${COLUMNS:=$(tput cols)}
+s=" ";while((${#s}<c));do s="$s  ";done
+while read line ; do
+  line="${s:0:$((c-(${#line}%c)))}$line"
+  while [ ! -z "$line" ] ; do
+    echo "${line: -$c}"
+    line="${line:0: -$c}"
+  done
+done

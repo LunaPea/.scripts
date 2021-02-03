@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+
+import os
+import time
+from gi.repository import GObject
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+import pympris
+from rofi import Rofi
+
+r = Rofi()
+
+dbus_loop = DBusGMainLoop()
+bus = dbus.SessionBus(mainloop=dbus_loop)
+players_ids = list(pympris.available_players())
+
+
+def player_menu():
+    while True:
+        time.sleep(0.1)
+        print(mp.player.Metadata)
+        menu = [
+                "Change player",
+                "Artist: "+mp.player.Metadata["xesam:artist"][0],
+                "Title: "+mp.player.Metadata["xesam:title"],
+                mp.player.PlaybackStatus,
+                "Next",
+                "Previous",
+                ]
+        index, key = r.select(
+                mp.root.Identity,
+                menu,
+                )
+        if key == 0:
+            if index == 0:
+                player_select()
+                break
+            if index == 3:
+                mp.player.PlayPause()
+            elif index == 4:
+                if mp.player.CanGoNext:
+                    mp.player.Next()
+            elif index == 5:
+                if mp.player.CanGoPrevious:
+                    mp.player.Previous()
+        else:
+            break
+for player in players_ids:
+    mp = pympris.MediaPlayer(player, bus)
+    if mp.root.Identity == "Spotify":
+        mp = pympris.MediaPlayer(player, bus)
+        player_menu()
