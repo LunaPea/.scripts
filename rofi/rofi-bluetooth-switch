@@ -5,7 +5,7 @@ from rofi import Rofi
 
 r = Rofi()
 profile = "profile: " + subprocess.getoutput("pacmd list-cards | grep bluez_card.E8_D0_3C_97_58_13 --context 19 | grep 'active profile'").replace("	active profile: <","").replace(">","")
-menus = ["quick connect/disconnect", "battery level", profile, "headset head unit", "a2dp sink", "bluetooth manager"] 
+menus = ["quick connect/disconnect", "battery level", profile, "bluetooth manager"] 
 
 while True:
     index, key = r.select(
@@ -30,15 +30,12 @@ while True:
             else:
                 battery = "your headset is not connected"
             r.error(battery)
-
+        
+        elif index == 2:
+            if profile == "a2dp_sink":
+                subprocess.os.system("pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 headset_head_unit")
+            elif profile == "headset_head_unit":
+                subprocess.os.system("pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 a2dp_sink")
         elif index == 3:
-            r.error("Swiched to headset head unit")
-            subprocess.os.system(
-                    "pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 headset_head_unit")
-        elif index == 4:
-            r.error("Switched to a2dp sink")
-            subprocess.os.system(
-                    "pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 a2dp_sink")
-        elif index == 5:
             subprocess.os.system("rofi-bluetooth")
     break
