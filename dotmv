@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+currdir=$(pwd)
+mv "$currdir/$1" ~/.scripts/
+ln -s ~/.scripts/$1 "$currdir/${1%"/"}"
