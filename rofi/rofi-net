@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+
+import subprocess
+from rofi import Rofi
+
+r = Rofi()
+connections = subprocess.getoutput("nmcli -f name c").split("\n")
+connected = subprocess.getoutput("nmcli | grep wlp2s0").split("\n")[0].replace("wlp2s0: connected to ","")
+
+print(connected)
+for i in range(len(connections)):
+    if connected in connections[i].rstrip():
+        connections[i] = "* "+connections[i].rstrip()
+    else:
+        connections[i] = connections[i].rstrip()
+
+connections.remove("NAME")
+
+print(connected)
+index, key = r.select("connect", connections)
+if key == 0:
+    if "*" in connections[index]:
+        subprocess.os.system("timeout 20 nmtui connect '{}'".format(connections[index]))

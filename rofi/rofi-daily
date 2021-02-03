@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+from json import JSONDecodeError
+from rofi import Rofi
+from datetime import date
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+        "-f", "--file", help="specify path to daily task file", required=True
+        )
+parser.add_argument(
+        "-a", "--archive_file", help="specify path to archive file", required=True
+        )
+args = parser.parse_args()
+
+today = date.today()
+titles = []
+r = Rofi()
+
+def initFile():
+    fileFormating = {"tasks": [{"name": "empty", "description": "empty"}],
+            "done_tasks": []}
+    with open(args.file, "w") as f:
+        json.dump(fileFormating, f, indent=2)
+    
+
+    archiveFormating = {"0": [{"date": today.strftime("%d/%m/%Y")}]}
+    with open(args.archive_file, "w") as f:
+        json.dump(archiveFormating, f, indent=2)
+
+    print("files are initialized.")
+    r.error("files are initialized")
+    exit()
+
+try:
+    with open(args.file) as f:
+        todos = json.load(f)
+    with open(args.archive_file) as f:
+        archive = json.load(f)
+
+except JSONDecodeError:
+    print("JSONDecodeError")
+    initFile()
+except KeyError:
+    print("KeyError")
+    initFile()
+
+def titlesInit():
+    for i in range(len(todos["tasks"])):
+        if todos["tasks"][i] in todos["done_tasks"]:
+            titles.append("* {}".format(todos["tasks"][i]["name"]))
+        else:
+            titles.append(todos["tasks"][i]["name"])
+
+def dayArchive():
+    archive[str(len(archive))].append(todos["done_tasks"])
+    archive[str(len(archive))] = [{"date": today.strftime("%d/%m/%Y")}]
+
+    with open(args.archive_file, "w") as f:
+        json.dump(archive, f, indent=2)
+
+if archive[str(len(archive)-1)][0]["date"] != today.strftime("%d/%m/%Y"):
+    dayArchive()
+
+
+while True:
+    titles = []
+    titlesInit()
+    index, key = r.select(
+            "daily todos",
+            titles,
+            key1=("Alt+c", "complete a task"),
+            key2=("Alt+d", "delete a task"),
+            key3=("Alt+a", "add a task"),
+            key4=("Alt+s", "show archive"),
+            )
+    if key == 0:
+        r.error(todos["tasks"][index]["description"])
+        pass
+    elif key == 1:
+        if not todos["tasks"][index] in todos["done_tasks"]:
+            todos["done_tasks"].append(todos["tasks"][index])
+
+            with open(args.file, "w") as f:
+                json.dump(todos, f, indent=2)
+
+            r.error("task done")
+        else:
+            for i in range(len(todos["done_tasks"])):
+                if todos["done_tasks"][i].items() == todos["tasks"][index].items():
+                    del todos["done_tasks"][i]
+                    r.error("task undone")
+    elif key == 2:
+        del todos["tasks"][index]
+        
+        with open(args.file, "w") as f:
+            json.dump(todos, f, indent=2)
+        r.error("Task deleted")
+    elif key == 3:
+        name = r.text_entry("Enter note name", rofi_args=["-l", "0"])
+        
+        if name:
+            desc = r.text_entry("Enter task description", rofi_args=["-l", "0"])
+            new_task = {"name": name, "description": desc}
+            todos["tasks"].append(new_task)
+            
+            with open(args.file, "w") as f:
+                json.dump(todos, f, indent=2)
+            r.error("Task added.")
+    elif key == 4:
+        #TODO
+        pass
+    else:
+        break

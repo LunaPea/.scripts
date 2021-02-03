@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+import subprocess
+from rofi import Rofi
+import argparse
+r = Rofi()
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-p", "--player", help="add change player option", action="store_true"
+)
+args = parser.parse_args()
+
+
+def main():
+    while True:
+        if not "State" in subprocess.getoutput("mocp -i"):
+            subprocess.os.system("padsp mocp -S")
+            subprocess.os.system("mocp -c")
+
+        current_volume = " "+subprocess.getoutput("pa_volume 'OSS Emulation[mocp]'").replace("client: OSS Emulation[mocp]","").replace(" ","")
+        
+        if args.player:
+            i = 1
+            menu = [
+                    "change player",
+                    "state: {}".format(subprocess.getoutput("mocp -i | grep State:").split("State: ",1)[1].lower()),
+                    current_volume,
+                    "next",
+                    "previous",
+                    "load music",
+                    "load all",
+                    "kill mocp",
+                    "clean playlist",
+                    "Playing: {}".format(subprocess.getoutput("mocp -i | grep -e music/ -e M/ -e shrooms/ -e mix/").split("music/",1)[-1].split("M/",1)[-1].split("shrooms/",1)[-1]).split("mix/",1)[-1].replace(".mp3","")
+                    ]
+        else:
+            i = 0
+            menu = [
+                    "state: {}".format(subprocess.getoutput("mocp -i | grep State:").split("State: ",1)[1].lower()),
+                    current_volume,
+                    "next",
+                    "previous",
+                    "load music",
+                    "load all",
+                    "kill mocp",
+                    "clean playlist",
+                    "Playing: {}".format(subprocess.getoutput("mocp -i | grep -e music/ -e M/ -e shrooms/ -e mix/").split("music/",1)[-1].split("M/",1)[-1].split("shrooms/",1)[-1]).split("mix/",1)[-1].replace(".mp3","")
+                    ]
+
+        index, key = r.select(
+                "mocp",
+                menu,
+                )
+        if key == 0:
+            if index == 0 and args.player:
+                subprocess.os.system("rofi-mpris")
+                break
+            elif index == i+0:
+                subprocess.os.system("mocp -G")
+            elif index == i+2:
+                subprocess.os.system("mocp -f")
+            elif index == i+3:
+                subprocess.os.system("mocp -r")
+            elif index == i+4:
+                subprocess.os.system("mocp -o shuffle -p -a ~/.music/")
+                subprocess.os.system("mocp -f")
+            elif index == i+5:
+                subprocess.os.system("mocp -o shuffle -p -a ~/.M")
+            elif index == i+6:
+                subprocess.os.system("killall mocp")
+                exit()
+            elif index == i+7:
+                subprocess.os.system("mocp -c")
+        else:
+            break
+
+if not "Connected: yes" in subprocess.getoutput("bluetoothctl info E8:D0:3C:97:58:13"):
+    r.error("Headset is not connected.")
+    index, key = r.select(
+            "Do you want to open bluetooth menu?",
+            ["Yes", "No"]
+            )
+    if key == 0:
+        if index == 0:
+            subprocess.os.system("rofi-bluetooth")
+    exit()
+#  if not "RUNNING" in subprocess.getoutput("pacmd list-sinks | grep 'bluez_sink.E8_D0_3C_97_58_13.a2dp_sink' --context 3"):
+    #  r.error("your headphones are not the deafult sink.")
+    #  index, key = r.select("do you want to set them to be?", ["yes", "no"])
+    #  if key == 0:
+        #  if index == 0:
+            #  subprocess.os.system("pacmd set-default-sink bluez_sink.E8_D0_3C_97_58_13.a2dp_sink")
+main()

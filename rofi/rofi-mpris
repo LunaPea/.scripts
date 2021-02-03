@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+import os
+import time
+from gi.repository import GObject
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+import pympris
+from rofi import Rofi
+
+r = Rofi()
+
+dbus_loop = DBusGMainLoop()
+bus = dbus.SessionBus(mainloop=dbus_loop)
+players_ids = list(pympris.available_players())
+
+def player_select():
+    player_names = []
+    global mp
+    for player in players_ids:
+        mp = pympris.MediaPlayer(player, bus)
+        player_names.append(mp.root.Identity)
+
+    player_names.append("mocp")
+   
+    index, key = r.select(
+            "select player",
+            player_names,
+            )
+    if key == 0:
+        if index == len(player_names)-1:
+            os.system("rofi-mocp -p")
+        else:
+            mp = pympris.MediaPlayer(players_ids[index], bus)    
+            player_menu()
+
+def player_menu():
+    while True:
+        time.sleep(0.1)
+        #  if isinstance(mp.player.Metadata["xesam:artist"], list):
+        if not "xesam:artist" in mp.player.Metadata:
+            menu = [
+                    "Change player",
+                    "Artist: ",
+                    "Title: ",
+                    mp.player.PlaybackStatus,
+                    "Next",
+                    "Previous",
+                    ]
+        elif isinstance(mp.player.Metadata["xesam:artist"], list):
+            menu = [
+                    "Change player",
+                    "Artist: "+mp.player.Metadata["xesam:artist"][0],
+                    "Title: "+mp.player.Metadata["xesam:title"],
+                    mp.player.PlaybackStatus,
+                    "Next",
+                    "Previous",
+                    ]
+        else:
+            menu = [
+                    "Change player",
+                    "Artist: "+mp.player.Metadata["xesam:artist"],
+                    "Title: "+mp.player.Metadata["xesam:title"],
+                    mp.player.PlaybackStatus,
+                    "Next",
+                    "Previous",
+                    ]
+        index, key = r.select(
+                mp.root.Identity,
+                menu,
+                )
+        if key == 0:
+            if index == 0:
+                player_select()
+                break
+            if index == 3:
+                mp.player.PlayPause()
+            elif index == 4:
+                if mp.player.CanGoNext:
+                    mp.player.Next()
+            elif index == 5:
+                if mp.player.CanGoPrevious:
+                    mp.player.Previous()
+        else:
+            break
+
+player_select()

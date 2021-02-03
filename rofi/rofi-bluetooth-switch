@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+import subprocess
+from rofi import Rofi
+
+r = Rofi()
+profile = "profile: " + subprocess.getoutput("pacmd list-cards | grep bluez_card.E8_D0_3C_97_58_13 --context 19 | grep 'active profile'").replace("	active profile: <","").replace(">","")
+menus = ["quick connect/disconnect", "battery level", profile, "headset head unit", "a2dp sink", "bluetooth manager"] 
+
+while True:
+    index, key = r.select(
+                "Bluetooth menu",
+                 menus)
+    if key == 0:
+        if index == 0:
+            if not "yes" in subprocess.getoutput("bluetoothctl show | grep 'Powered: yes'"):
+                subprocess.os.system("bluetoothctl power on")
+            if "yes" in subprocess.getoutput("bluetoothctl info E8:D0:3C:97:58:13 | grep 'Connected: yes'"):
+                subprocess.os.system("mocp -P")
+                subprocess.os.system("bluetoothctl disconnect E8:D0:3C:97:58:13")
+                r.error("disconnected")
+            else:
+                subprocess.os.system("bluetoothctl connect E8:D0:3C:97:58:13")
+
+        elif index == 1:
+            if "JBL" in subprocess.getoutput("bluetoothctl info E8:D0:3C:97:58:13"):
+                battery = subprocess.getoutput(
+                        "bluetooth-headset-battery-level E8:D0:3C:97:58:13.1"
+                        ).split("is ",1)[1]
+            else:
+                battery = "your headset is not connected"
+            r.error(battery)
+
+        elif index == 3:
+            r.error("Swiched to headset head unit")
+            subprocess.os.system(
+                    "pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 headset_head_unit")
+        elif index == 4:
+            r.error("Switched to a2dp sink")
+            subprocess.os.system(
+                    "pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 a2dp_sink")
+        elif index == 5:
+            subprocess.os.system("rofi-bluetooth")
+    break
