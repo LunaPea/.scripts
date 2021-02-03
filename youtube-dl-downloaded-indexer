@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for n in *.mp3
+do if [[ "$n" =~ -[-_0-9a-zA-Z]{11}.mp3$ ]]
+   then echo "youtube ${n: -15: 11}" >> downloaded.txt
+   fi
+done
