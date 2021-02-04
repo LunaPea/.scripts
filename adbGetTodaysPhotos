@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+date=$(date +'%Y%m%d')
+adb connect 192.168.1.111
+adb pull sdcard/DCIM/Camera
+cp ~/Camera/IMG_$date* ~/
+rm ~/Camera -rf
