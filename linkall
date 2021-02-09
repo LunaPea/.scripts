@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+ln -s ~/.scripts/0x0 ~/.local/bin/
+ln -s ~/.scripts/adbGetTodaysPhotos ~/.local/bin/
+ln -s ~/.scripts/dotmv ~/.local/bin/
+ln -s ~/.scripts/ex ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-bluetooth-switch ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-daily ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-menu ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-mocp ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-movies ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-mpris ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-search ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-todo ~/.local/bin/
+ln -s ~/.scripts/send ~/.local/bin/
