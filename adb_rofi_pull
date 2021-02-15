@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+path="/sdcard"
+selection="0"
+
+while (true) ; do
+	if [ $prev = $selection ] ; then
+		exit
+	fi
+	selection="$path/$(adb shell ls -1 $path | rofi -dmenu)"
+	prev=$selection
+
+	if $(adb shell [ -d $selection ]) ; then
+		path=$selection
+	elif $(adb shell [ -f $selection ]) ; then
+		adb pull $selection
+		exit
+	fi
+done
