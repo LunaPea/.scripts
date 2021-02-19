@@ -18,7 +18,6 @@ while True:
             if "yes" in subprocess.getoutput("bluetoothctl info E8:D0:3C:97:58:13 | grep 'Connected: yes'"):
                 subprocess.os.system("mocp -P")
                 subprocess.os.system("bluetoothctl disconnect E8:D0:3C:97:58:13")
-                r.error("disconnected")
             else:
                 subprocess.os.system("bluetoothctl connect E8:D0:3C:97:58:13")
 
