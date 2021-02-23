@@ -7,8 +7,8 @@ while (true) ; do
 	if [ $prev = $selection ] ; then
 		exit
 	fi
-	selection="$path/$(adb shell ls -1 $path | rofi -dmenu)"
 	prev=$selection
+	selection="$path/$(adb shell ls -1 $path | rofi -dmenu)"
 
 	if $(adb shell [ -d $selection ]) ; then
 		path=$selection
