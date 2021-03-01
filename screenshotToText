@@ -17,4 +17,3 @@ tesseract $SCR_IMG.png $SCR_IMG &> /dev/null
 cat $SCR_IMG.txt | xsel -bi
 
 exit
-
