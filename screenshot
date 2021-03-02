@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 
-
-scrot -s /tmp/scrot_screenshot -q 100
+case "$(printf "selected area\\ncurrent window\\nfull screen" | rofi -dmenu -l 6 -i -p "Screenshot which area?")" in
+	"selected area") maim -s /tmp/maim_screenshot.png ;;
+	"current window") maim -i "$(xdotool getactivewindow)" /tmp/maim_screenshot.png ;;
+	"full screen") maim /tmp/maim_screenshot.png ;;
+esac
 
 while true; do
-	name=$(rofi -dmenu -p "filename" -lines 0 -width 30)
+	name=$(rofi -dmenu -p "Filename" -lines 0 -width 30)
 
 	if ! test -f ~/Pictures/$name.png; then
 		break
 	fi
 
-	overwrite=$(echo -en "no\nyes" | rofi -dmenu -p "Do you want to overwrite $name.png?" -lines 2 -width 30)
+	overwrite=$(echo -en "No\nYes" | rofi -dmenu -p "Do you want to overwrite $name.png?" -lines 2 -width 30)
 
-	if [ "$overwrite" == "yes" ]; then
+	if [ "$overwrite" == "Yes" ]; then
 		break
 	fi
 done
 
-mv /tmp/scrot_screenshot ~/Pictures/$name.png
+mv /tmp/maim_screenshot.png ~/Pictures/$name.png
+
+xclip -selection clipboard -t image/png -i ~/Pictures/$name.png
