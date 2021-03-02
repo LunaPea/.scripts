@@ -1,12 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env bash
 
-import subprocess
+usage_root=$(lsblk -o mountpoint,fsuse% | grep "/ ")
+usage_root=${usage_root#"/             "}
+usage_files=$(lsblk -o mountpoint,fsuse% | grep "/mnt/files")
+usage_files=${usage_files#"/mnt/files    "}
+usage_mnt=$(lsblk -o mountpoint,fsuse% | grep "/mnt/mnt")
+usage_mnt=${usage_mnt#"/mnt/mnt      "}
 
-usage_sda = subprocess.getoutput("lsblk -o name,fsuse% | grep nvme0n1p2").replace("└─nvme0n1p2    ", "")
-usage = subprocess.getoutput("lsblk -o label,fsuse% | grep 'New Disk'").replace("New Disk    ", "")
-usage2 = subprocess.getoutput("lsblk -o name,fsuse% | grep nvme0n1p3").replace("└─nvme0n1p3    ", "")
-disk_labels = subprocess.getoutput("lsblk -o label")
-if not "New Disk" in disk_labels:
-    print("/m/files " + usage2)
-else:
-    print("/m/files " + usage2 + ", /m/mnt: " + usage)
+if lsblk -o mountpoint | grep -q "/mnt/mnt"; then
+	echo "/ $usage_root, /m/files $usage_files, /m/mnt $usage_mnt"
+else
+	echo "/ $usage_root, /m/files $usage_files"
+fi
