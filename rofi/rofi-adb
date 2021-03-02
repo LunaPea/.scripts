@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+adb connect 192.168.1.111
+
 path="/sdcard"
 selection="0"
 
@@ -7,7 +9,7 @@ while (true) ; do
 	if [ $prev = $selection ] ; then
 		exit
 	fi
-	prev=$selection
+	prev="$selection/"
 	selection="$path/$(adb shell ls -1 $path | rofi -dmenu)"
 
 	if $(adb shell [ -d $selection ]) ; then
