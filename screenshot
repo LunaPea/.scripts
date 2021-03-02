@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+
+scrot -s /tmp/scrot_screenshot -q 100
+
+while true; do
+	name=$(rofi -dmenu -p "filename" -lines 0 -width 30)
+
+	if ! test -f ~/Pictures/$name.png; then
+		break
+	fi
+
+	overwrite=$(echo -en "no\nyes" | rofi -dmenu -p "Do you want to overwrite $name.png?" -lines 2 -width 30)
+
+	if [ "$overwrite" == "yes" ]; then
+		break
+	fi
+done
+
+mv /tmp/scrot_screenshot ~/Pictures/$name.png
