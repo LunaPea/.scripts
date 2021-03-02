@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 
-case "$(printf "selected area\\ncurrent window\\nfull screen" | rofi -dmenu -l 6 -i -p "Screenshot which area?")" in
+case "$(printf "selected area\\ncurrent window\\nfull screen\\nselected area to text" | rofi -dmenu -l 6 -i -p "Screenshot which area?")" in
 	"selected area") maim -s /tmp/maim_screenshot.png ;;
 	"current window") maim -i "$(xdotool getactivewindow)" /tmp/maim_screenshot.png ;;
 	"full screen") maim /tmp/maim_screenshot.png ;;
+	"selected area to text") maim -s /tmp/maim_screenshot_to_text.png ;;
 esac
+
+if test -f /tmp/maim_screenshot_to_text.png; then
+	mogrify -modulate 100,0 -resize 400% /tmp/maim_screenshot_to_text.png 
+	tesseract /tmp/maim_screenshot_to_text.png /tmp/tesseract_screenshot &> /dev/null
+	xclip -selection clipboard -i /tmp/tesseract_screenshot.txt
+	rm /tmp/tesseract_screenshot.txt /tmp/maim_screenshot_to_text.png
+	exit
+fi
 
 while true; do
 	name=$(rofi -dmenu -p "Filename" -lines 0 -width 30)
