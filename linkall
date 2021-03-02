@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 ln -s ~/.scripts/0x0 ~/.local/bin/
-ln -s ~/.scripts/adbGetTodaysPhotos ~/.local/bin/
 ln -s ~/.scripts/dotmv ~/.local/bin/
 ln -s ~/.scripts/ext ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-bluetooth-switch ~/.local/bin/
