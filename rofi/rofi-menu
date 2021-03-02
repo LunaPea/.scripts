@@ -2,7 +2,7 @@
 
 menus="墳 change sink\n kdeconnect menu\n restart bspwm\n bluetooth menu\n爵 search\n  0x0.st\n clipboard\n calculator\n aplication menu\n launch mocp\n kill music\n scrcpy\n scrcpy over network\n adb over network\n todo\n kill session\n鈴 sleep\n  minecraft wither skeleton farm\n  minecraft creeper farm"
 
-case "$(echo -en $menus | rofi -dmenu)" in
+case "$(echo -en $menus | rofi -dmenu -p "rofi-menu")" in
 	"墳 change sink") pulseaudio-control next-sink ;;
 	" kdeconnect menu") ~/.scripts/polybar-kdeconnect.sh -c -g -n 'Redmi' -i 954ba9f16268dab7 -m ;;
 	" restart bspwm") ~/.scripts/killall.sh ;;
