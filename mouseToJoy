@@ -10,8 +10,6 @@ import time
 import os
 import mouse as mouse2
 
-
-
 stop_mouse = False
 mice = open( "/dev/input/mouse0", "rb" );
 
@@ -31,31 +29,33 @@ def key_press(key): # toggle mouse movement
 keyboard.on_press(key_press)
 
 def get_mouse_event(): 
-    global X
-    global Y
-    speed = 110
-    X = 0
-    Y = 0
+    global x
+    global y
+    speed = 200
     i = 0
+    pX = 0
+    pY = 0
+    x = 0
+    y = 0
+
     while True:
-        buf = mice.read(3);
-        x,y = struct.unpack( "bb", buf[1:] );
-        X += x
-        Y += y
-        i += 1
-        if i == 3:
-            device.emit(uinput.ABS_X, X*speed)
-            device.emit(uinput.ABS_Y, Y*speed)
+        if stop_mouse:
+            buf = mice.read(3);
+            x,y = struct.unpack( "bb", buf[1:] );
+            
+            X = int((x*speed+pX)/2)
+            Y = int((y*speed+pY)/2)
+            device.emit(uinput.ABS_X, X)
+            device.emit(uinput.ABS_Y, Y)
+            pX = X
+            pY = Y
             print(X,Y)
-            X = 0
-            Y = 0
-            i = 0
 
 def mouse_move():
     i = 0
     j = 0
-    global X
-    global Y
+    global x
+    global y
     global Z
     Z = 0
     pX = 0
@@ -63,15 +63,15 @@ def mouse_move():
     while True:
         time.sleep(0.01)
         device.emit(uinput.ABS_RX, Z)
-        if X == pX and Y == pY:
+        if x == pX and y == pY:
             i += 1
             if i > 2:
                 device.emit(uinput.ABS_X, 0)
                 device.emit(uinput.ABS_Y, 0)
         else:
             i = 0
-        pX = X
-        pY = Y
+        pX = x
+        pY = y
 
 def mouse_no_move():
     global stop_mouse
@@ -81,9 +81,9 @@ def mouse_no_move():
 
 def on_click(x, y, button, pressed):
     global Z
-    if button == mouse.Button.right and pressed:
+    if button == mouse.Button.right and pressed and stop_mouse:
         Z = 100
-    if button == mouse.Button.left and pressed:
+    if button == mouse.Button.left and pressed and stop_mouse:
         Z = -100
     if not pressed:
         Z = 0
