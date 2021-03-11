@@ -4,7 +4,7 @@ import os
 from rofi import Rofi
 
 r = Rofi()
-path = "/mnt/Michal/Downloads/Movies"
+path = "/mnt/mnt/Michal/Downloads/Movies"
 if not os.path.isfile(path):
     path = "/home/michal"
 
