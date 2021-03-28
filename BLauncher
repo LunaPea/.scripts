@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+mcdir=/mnt/files/Games/.minecraft
+. $mcdir/bash-launch-config
+
+config (){
+	version=$(ls $mcdir/versions -1 | rofi -dmenu -p "choose version")
+
+	version_base=$(cat $mcdir/versions/$version/$version.json | jq --raw-output '.inheritsFrom')
+
+	if [ "$version_base" == "null" ]; then
+		version_base=$version
+	else
+		parse_libs $version_base
+	fi
+	parse_libs $version
+
+	libraries=$libraries:versions/$version_base/$version_base.jar
+	echo "libraries=$libraries; version=$version; version_base=$version_base; file=$file" > $mcdir/bash-launch-config
+
+}
+
+parse_libs (){
+	file=$mcdir/versions/$1/$1.json
+
+	libraries=$libraries$(paste\
+		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f1 --complement | rev | tr : / | tr . /)\
+		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f1 | rev)\
+		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f2 | rev)\
+		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d":" -f1 | rev) |\
+		awk '{print "libraries/"$1"/"$2"/"$3"-"$4".jar"}' | tr '\n' :)
+
+}
+
+launch (){
+	cd "${mcdir}" || exit 1
+
+	java -Xmx8000M\
+		-Xss1M\
+		-XX:+UnlockExperimentalVMOptions\
+		-XX:+UseG1GC\
+		-XX:G1NewSizePercent=20\
+		-XX:G1ReservePercent=20\
+		-XX:MaxGCPauseMillis=50\
+		-XX:G1HeapRegionSize=32M\
+		"-Djava.library.path=versions/$version_base/natives"\
+		-cp "$libraries"\
+		$(cat $file | jq --raw-output '.mainClass')\
+		--tweakClass optifine.OptiFineTweaker\
+		--username Luna\
+		--version $version\
+		--gameDir .\
+		--assetsDir assets\
+		--assetIndex $(echo $version_base | rev | cut -d'.' -f1 --complement | rev )\
+		--uuid 00000000000000000000000000000000\
+		--accessToken 00000000000000000000000000000000\
+		--userType mojang\
+		--versionType release
+}
+
+while getopts 'lc' o; do
+	case $o in
+		l) launch ;;
+		c) config ;;
+	esac
+done
