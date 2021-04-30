@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+perc_str=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep 'percentage')
+perc=${perc_str#"    percentage:          "}
+perc=${perc%"%"}
+
+if [ $perc -lt 11 ]
+then
+	if ! grep -q " charging" <<< "$(upower -i /org/freedesktop/UPower/devices/battery_BAT0)"
+	then
+	  notify-send "low battery: $perc"
+	fi
+fi
+
+if grep -q " charging" <<< "$(upower -i /org/freedesktop/UPower/devices/battery_BAT0)"
+then
+  icon=""
+else
+	case $perc in
+		2*)  icon="" ;;
+		3*)  icon="" ;;
+		4*)  icon="" ;;
+		5*)  icon="" ;;
+		6*)  icon="" ;;
+		7*)  icon="" ;;
+		8*)  icon="" ;;
+		9*)  icon="" ;;
+		100) icon="" ;;
+	esac
+fi
+time="$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep 'time')"
+time=${time#"    time to empty:       "}
+time=${time#"    time to full:       "}
+battery="$icon $perc%, $time"
+echo $battery
