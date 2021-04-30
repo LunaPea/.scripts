@@ -2,13 +2,11 @@
 
 usage_root=$(lsblk -o mountpoint,fsuse% | grep "/ ")
 usage_root=${usage_root#"/             "}
-usage_files=$(lsblk -o mountpoint,fsuse% | grep "/mnt/files")
-usage_files=${usage_files#"/mnt/files    "}
 usage_mnt=$(lsblk -o mountpoint,fsuse% | grep "/mnt/mnt")
 usage_mnt=${usage_mnt#"/mnt/mnt      "}
 
 if lsblk -o mountpoint | grep -q "/mnt/mnt"; then
-	echo "/ $usage_root, /m/files $usage_files, /m/mnt $usage_mnt"
+	echo "/ $usage_root, /m/mnt $usage_mnt"
 else
-	echo "/ $usage_root, /m/files $usage_files"
+	echo "/ $usage_root"
 fi
