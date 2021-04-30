@@ -13,8 +13,10 @@ input = r.text_entry(
 
 if input[0 : 2] == "p ":
     os.system('''firefox "thepiratebay10.org/search/{}"'''.format(input[2 : ]))
+elif input[0 : 3] == "rl ":
+    os.system('''firefox "https://rutracker.org/forum/tracker.php?f=1992,2059&nm={}"'''.format(input[3 : ]))
 elif input[0 : 2] == "r ":
-    os.system('''firefox "https://rutracker.org/forum/tracker.php?f=1992,2059&nm={}"'''.format(input[2 : ]))
+    os.system('''firefox "https://rutracker.org/forum/tracker.php?nm={}"'''.format(input[2 : ]))
 elif input[0 : 2] == "a ":
     os.system('''firefox "wiki.archlinux.org/index.php?search={}"'''.format(input[2 : ]))
 elif input[0 : 2] == "h ":
