@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-mcdir=/mnt/files/Games/.minecraft
-. $mcdir/bash-launch-config
+mcdir=/home/luna/Games/.minecraft
+. $mcdir/BLauncher.config
 
 config (){
 	version=$(ls $mcdir/versions -1 | rofi -dmenu -p "choose version")
@@ -16,18 +16,20 @@ config (){
 	parse_libs $version
 
 	libraries=$libraries:versions/$version_base/$version_base.jar
-	echo "libraries=$libraries; version=$version; version_base=$version_base; file=$file" > $mcdir/bash-launch-config
+	echo "libraries=$libraries; version=$version; version_base=$version_base; file=$file" > $mcdir/BLauncher.config
 
 }
 
 parse_libs (){
 	file=$mcdir/versions/$1/$1.json
 
+	raw_libraries=$(cat "$file" | jq --raw-output '.libraries[] | select( .rules == null or (try .rules[] | select(.action == "allow" and (.os.name == null or .os.name == "linux")))) | .name')
+
 	libraries=$libraries$(paste\
-		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f1 --complement | rev | tr : / | tr . /)\
-		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f1 | rev)\
-		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d':' -f2 | rev)\
-		<(cat "$file" | jq --raw-output '.libraries[].name' | rev | cut -d":" -f1 | rev) |\
+		<(echo "$raw_libraries" | rev | cut -d':' -f1 --complement | rev | tr : / | tr . /)\
+		<(echo "$raw_libraries" | rev | cut -d':' -f1 | rev)\
+		<(echo "$raw_libraries" | rev | cut -d':' -f2 | rev)\
+		<(echo "$raw_libraries" | rev | cut -d":" -f1 | rev) |\
 		awk '{print "libraries/"$1"/"$2"/"$3"-"$4".jar"}' | tr '\n' :)
 
 }
@@ -35,7 +37,7 @@ parse_libs (){
 launch (){
 	cd "${mcdir}" || exit 1
 
-	java -Xmx8000M\
+	java -Xmx10000M\
 		-Xss1M\
 		-XX:+UnlockExperimentalVMOptions\
 		-XX:+UseG1GC\
@@ -58,9 +60,62 @@ launch (){
 		--versionType release
 }
 
-while getopts 'lc' o; do
+download (){
+
+	version_manifest_url=https://launchermeta.mojang.com/mc/game/version_manifest.json
+	case "$(printf "release\\nsnapshot\\nall\\nlatest release\\nlatest snapshot" | rofi -dmenu -p 'choose versions to view')" in
+		'release') type1=release ;;
+		'snapshot') type1=snapshot; type2=release ;;
+		'all') all=true ;;
+		'latest release') version_to_download=$(curl $version_manifest_url |\
+			jq --raw-output '.latest.release') ;;
+		'latest snapshot') version_to_download=$(curl $version_manifest_url |\
+			jq --raw-output '.latest.snapshot') ;;
+	esac
+
+	if ! test -z $type1 || ! test -z $all; then
+		version_to_download=$(curl $version_manifest_url |\
+			jq --raw-output '.versions[] | select(
+			.type == "'$type1'" or
+			.type == "'$type2'" or
+			"true" == "'$all'") | .id' |\
+			rofi -dmenu -p "choose version to download")
+	fi
+
+	mkdir -p $mcdir/versions/$version_to_download
+	version_json=$mcdir/versions/$version_to_download/$version_to_download.json
+
+	curl $(curl $version_manifest_url |\
+		jq --raw-output '.versions[] | select(
+			.id == "'$version_to_download'") | .url')\
+		-o $version_json
+	
+	mkdir -p $mcdir/assets/indexes
+	curl $(cat $version_json | jq --raw-output '.assetIndex.url')\
+		-o $mcdir/assets/indexes/$(cat $version_json | jq --raw-output '.assetIndex.id').json
+
+	curl $(cat $version_json | jq --raw-output '.downloads.client.url')\
+		-o $mcdir/versions/$version_to_download/$version_to_download.jar
+
+	# TODO download from assets indexes ????
+
+	raw_libraries=$(cat $version_json | jq --raw-output '.libraries[] | select( .rules == null or (try .rules[] | select(.action == "allow" and (.os.name == null or .os.name == "linux")))) | .name')
+
+	libraries_dirs=$(paste\
+		<(echo "$raw_libraries" | rev | cut -d':' -f1 --complement | rev | tr : / | tr . /)\
+		<(echo "$raw_libraries" | rev | cut -d':' -f1 | rev)\
+		<(echo "$raw_libraries" | rev | cut -d':' -f2 | rev)\
+		<(echo "$raw_libraries" | rev | cut -d":" -f1 | rev) |\
+		awk '{print "libraries/"$1"/"$2"/"$3"-"$4".jar"}' )
+	
+
+	
+}
+
+while getopts 'lcd' o; do
 	case $o in
 		l) launch ;;
 		c) config ;;
+		d) download ;;
 	esac
 done
