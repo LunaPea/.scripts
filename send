@@ -2,20 +2,20 @@
 
 if [ $1 == lap ]; then
 	if [ "$#" -ne 2 ]; then
-	  scp -r "$2" "michal@192.168.1.11:$3"
+	  scp -r "$2" "luna@192.168.1.11:$3"
 	else
-	  scp -r "$2" michal@192.168.1.11:~/
+	  scp -r "$2" luna@192.168.1.11:~/
 	fi
 elif [ $1 == serv ]; then
 	if [ "$#" -ne 2 ]; then
-	  scp -r "$2" "michal@192.168.1.60:$3"
+	  scp -r "$2" "luna@192.168.1.60:$3"
 	else
-	  scp -r "$2" michal@192.168.1.60:~/
+	  scp -r "$2" luna@192.168.1.60:~/
 	fi
 else
 	if [ "$#" -ne 1 ]; then
-	  scp -r "$1" "michal@192.168.1.11:$2"
+	  scp -r "$1" "luna@192.168.1.11:$2"
 	else
-	  scp -r "$1" michal@192.168.1.11:~/
+	  scp -r "$1" luna@192.168.1.11:~/
 	fi
 fi
