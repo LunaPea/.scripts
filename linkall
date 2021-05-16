@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+mkdir -p ~/.local/bin
 ln -s ~/.scripts/0x0 ~/.local/bin/
 ln -s ~/.scripts/dotmv ~/.local/bin/
 ln -s ~/.scripts/ext ~/.local/bin/
