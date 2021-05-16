@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 currdir=$(pwd)
-mv "$currdir/$1" ~/.scripts/
-ln -s ~/.scripts/$1 "$currdir/${1%"/"}"
+mv "$currdir/$1" ~/.dotfiles/
+ln -s ~/.dotfiles/$1 "$currdir/${1%"/"}"
+link="ln -s ~/.dotfiles/$1 "~/.config/${1%"/"}""
+echo $link >> ~/.dotfiles/linkall
