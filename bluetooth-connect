@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 bluetoothctl power on
-if bluetoothctl info E8:D0:3C:97:58:13 | grep 'Connected: yes'
+if bluetoothctl info 88:D0:39:6B:77:2B | grep 'Connected: yes'
 then
   mocp -P
-  bluetoothctl disconnect E8:D0:3C:97:58:13
+  bluetoothctl disconnect 88:D0:39:6B:77:2B
 else
-  bluetoothctl connect E8:D0:3C:97:58:13
+  bluetoothctl connect 88:D0:39:6B:77:2B
 fi
