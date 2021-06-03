@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd ~/.local/share/wine-lutris
+curl -s https://api.github.com/repos/lutris/wine/releases/latest\
+	| grep "browser_download_url.*wine-lutris-.*.tar.xz"\
+	| cut -d : -f 2,3\
+	| tr -d \"\
+	| wget -qi -
+tar xf wine-lutris-*.tar.xz
+rm wine-lutris-*.tar.xz
+rm -rf wine-latest
+cp $(ls | grep "lutris-" | tail -1) wine-latest -r
+
