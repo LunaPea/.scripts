@@ -1,0 +1,149 @@
+#!/bin/sh
+# fork of https://github.com/pystardust/ani-cli
+
+# dependencies: sed awk curl mpv rofi
+
+
+die () {
+	echo "$*" | rofi -dmenu -p "error"
+	exit 1
+}
+
+search_anime () {
+	# get anime name along with its id
+	search=$1
+	titlepattern='<a href="/category/'
+
+	curl -s "https://gogoanime.vc//search.html" \
+		-G \
+		-d "keyword=$search" |
+	sed -n -E '
+        #<a href="/category/one-punch-man" title="One Punch Man">
+		s_^[[:space:]]*<a href="/category/([^"]*)" title="([^"]*)".*_\1_p
+		'
+}
+
+search_eps () {
+	# get available episodes for anime_id
+	anime_id=$1
+
+	curl -s "https://gogoanime.vc/category/$anime_id" |
+	sed -n -E '
+		/^[[:space:]]*<a href="#" class="active" ep_start/{
+		s/.* '\''([0-9]*)'\'' ep_end = '\''([0-9]*)'\''.*/\2/p
+		q
+		}
+		'
+}
+
+get_links () {
+	# get the download page url
+	anime_id=$1
+	ep_no=$2
+
+	dpage_url=$(
+	curl -s "https://gogoanime.vc/$anime_id-episode-$ep_no" |
+	sed -n -E '
+		/^[[:space:]]*<li class="dowloads">/{
+		s/.*href="([^"]*)".*/\1/p
+		q
+		}')
+
+	curl -s "$dpage_url" |
+	sed -n -E '
+		/^[[:space:]]*href="([^"]*\.mp4)".*/{
+		s/^[[:space:]]*href="([^"]*\.mp4)".*/\1/p
+		q
+		}
+		'
+}
+
+#####################
+## Anime selection ##
+#####################
+
+shift $((OPTIND - 1))
+
+query=$(rofi -dmenu -p "search anime")
+search_results=$(search_anime "$query")
+
+[ -z "$search_results" ] && die "No search results found"
+
+count=1
+while read anime_id; do
+	anime_results="$anime_results$count $anime_id\n"
+	count=$((count+1))
+done <<EOF
+$search_results
+EOF
+
+choice=$(echo $anime_results | rofi -dmenu | awk '{print $1}')
+
+# Check if input is a number
+[ "$choice" -eq "$choice" ] 2>/dev/null || die "Invalid input"
+
+# Select respective anime_id
+count=1
+while read anime_id; do
+	if [ $count -eq $choice ]; then
+		selection_id=$anime_id
+		break
+	fi
+	count=$((count+1))
+done <<EOF
+$search_results
+EOF
+
+[ -z "$selection_id" ] && die "Invalid input"
+
+##################
+## Ep selection ##
+##################
+read last_ep_number <<EOF
+$(search_eps "$selection_id")
+EOF
+
+if [ $last_ep_number -eq 1 ]; then
+	ep_choice=1
+else
+	ep_choice=$(rofi -dmenu -p "Choose episode [1-$last_ep_number]")
+fi
+
+while :; do
+
+	if [ $ep_choice -lt 1 ] || [ $ep_choice -gt $last_ep_number ]; then
+		die "Episode out of range"
+	fi
+
+	printf "Getting data for episode %d\n" $ep_choice
+
+	video_url=$(get_links "$selection_id" "$ep_choice")
+
+	case $video_url in
+		*streamtape*)
+			# If direct download not available then scrape streamtape.com
+			BROWSER=${BROWSER:-firefox}
+			printf "scraping streamtape.com\n"
+			video_url=$(curl -s "$video_url" | sed -n -E '
+				/^<script>document/{
+				s/^[^"]*"([^"]*)" \+ '\''([^'\'']*).*/https:\1\2\&dl=1/p
+				q
+				}
+			');;
+	esac
+
+	mpv "$video_url" >/dev/null 2>&1
+
+	case "$(echo "next episode\nprevious episode\nexit" | rofi -dmenu)" in
+		"next episode")
+			ep_choice=$((ep_choice+1));;
+		"previous episode")
+			ep_choice=$((ep_choice-1))
+			;;
+		"exit")
+			break;;
+		*)
+			die "invalid choice"
+			;;
+	esac
+done
