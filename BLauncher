@@ -54,7 +54,7 @@ launch (){
 		--version $version\
 		--gameDir .\
 		--assetsDir assets\
-		--assetIndex $(echo $version_base | rev | cut -d'.' -f1 --complement | rev )\
+		--assetIndex $(echo $version_base | cut -d'.' -f3 --complement )\
 		--uuid 00000000000000000000000000000001\
 		--accessToken 00000000000000000000000000000001\
 		--userType mojang\
