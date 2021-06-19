@@ -5,6 +5,7 @@ mcdir=/home/luna/Games/.minecraft
 
 config (){
 	version=$(ls $mcdir/versions -1 | rofi -dmenu -p "choose version")
+	libraries=
 
 	version_base=$(cat $mcdir/versions/$version/$version.json | jq --raw-output '.inheritsFrom')
 
@@ -54,8 +55,8 @@ launch (){
 		--gameDir .\
 		--assetsDir assets\
 		--assetIndex $(echo $version_base | rev | cut -d'.' -f1 --complement | rev )\
-		--uuid 00000000000000000000000000000000\
-		--accessToken 00000000000000000000000000000000\
+		--uuid 00000000000000000000000000000001\
+		--accessToken 00000000000000000000000000000001\
 		--userType mojang\
 		--versionType release
 }
