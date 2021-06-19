@@ -61,6 +61,30 @@ launch (){
 		--versionType release
 }
 
+dump_launch_options (){
+	echo "java -Xmx10000M" > ~/launch_options.txt
+	echo "	-Xss1M" >> ~/launch_options.txt
+	echo "	-XX:+UnlockExperimentalVMOptions" >> ~/launch_options.txt
+	echo "	-XX:+UseG1GC" >> ~/launch_options.txt
+	echo "	-XX:G1NewSizePercent=20" >> ~/launch_options.txt
+	echo "	-XX:G1ReservePercent=20" >> ~/launch_options.txt
+	echo "	-XX:MaxGCPauseMillis=50" >> ~/launch_options.txt
+	echo "	-XX:G1HeapRegionSize=32M" >> ~/launch_options.txt
+	echo "	"-Djava.library.path=versions/$version_base/natives"" >> ~/launch_options.txt
+	echo "	-cp "$libraries"" >> ~/launch_options.txt
+	echo "	$(cat $file | jq --raw-output '.mainClass')" >> ~/launch_options.txt
+	echo "	--tweakClass optifine.OptiFineTweaker" >> ~/launch_options.txt
+	echo "	--username Luna" >> ~/launch_options.txt
+	echo "	--version $version" >> ~/launch_options.txt
+	echo "	--gameDir ." >> ~/launch_options.txt
+	echo "	--assetsDir assets" >> ~/launch_options.txt
+	echo "	--assetIndex $(echo $version_base | cut -d'.' -f3 --complement )" >> ~/launch_options.txt
+	echo "	--uuid 00000000000000000000000000000001" >> ~/launch_options.txt
+	echo "	--accessToken 00000000000000000000000000000001" >> ~/launch_options.txt
+	echo "	--userType mojang" >> ~/launch_options.txt
+	echo "	--versionType release" >> ~/launch_options.txt
+}
+
 download (){
 
 	version_manifest_url=https://launchermeta.mojang.com/mc/game/version_manifest.json
@@ -113,10 +137,11 @@ download (){
 	
 }
 
-while getopts 'lcd' o; do
+while getopts 'lcdo' o; do
 	case $o in
 		l) launch ;;
 		c) config ;;
 		d) download ;;
+		o) dump_launch_options ;;
 	esac
 done
