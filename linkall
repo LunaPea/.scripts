@@ -18,4 +18,3 @@ ln -s ~/.scripts/vimv ~/.local/bin/
 ln -s ~/.scripts/screenshot ~/.local/bin/
 ln -s ~/.scripts/prompt ~/.local/bin/
 ln -s ~/.scripts/samedir ~/.local/bin/
-ln -s ~/.scripts/rofi/rofi-ani ~/.local/bin/
