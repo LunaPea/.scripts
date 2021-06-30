@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 hostname=$(cat /etc/hostname)
 if [ $hostname == "arch" ]; then
-	addres=$(sudo nmap -p 22 192.168.1.0/24 | grep "Ruckus Wireless" --before-context 5 | grep "Nmap scan report for" | cut -d'(' -f2 | tr -d ')')
+	addres=$(sudo nmap -p 22 192.168.1.0/24 | grep "Intel Corporate" --before-context 5 | grep "Nmap scan report for" | cut -d'(' -f2 | tr -d ')')
 elif [ $hostname == "arch-dell" ]; then
 	addres=$(sudo nmap -p 22 192.168.1.0/24 | grep "ASRock Incorporation" --before-context 5 | grep "Nmap scan report for" | cut -d'(' -f2 | tr -d ')')
 fi
