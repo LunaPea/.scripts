@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
+hostname=$(cat /etc/hostname)
+if [ $hostname == "arch" ]; then
+	addres=$(sudo nmap -p 22 192.168.1.0/24 | grep "Ruckus Wireless" --before-context 5 | grep "Nmap scan report for" | cut -d'(' -f2 | tr -d ')')
+elif [ $hostname == "arch-dell" ]; then
+	addres=$(sudo nmap -p 22 192.168.1.0/24 | grep "ASRock Incorporation" --before-context 5 | grep "Nmap scan report for" | cut -d'(' -f2 | tr -d ')')
+fi
 
-if [ $1 == lap ]; then
-	if [ "$#" -ne 2 ]; then
-	  scp -r "$2" "luna@192.168.1.11:$3"
-	else
-	  scp -r "$2" luna@192.168.1.11:~/
-	fi
-elif [ $1 == serv ]; then
-	if [ "$#" -ne 2 ]; then
-	  scp -r "$2" "luna@192.168.1.60:$3"
-	else
-	  scp -r "$2" luna@192.168.1.60:~/
-	fi
+if [ "$#" -ne 1 ]; then
+  scp -r "$1" "luna@$addres:$2"
 else
-	if [ "$#" -ne 1 ]; then
-	  scp -r "$1" "luna@192.168.1.11:$2"
-	else
-	  scp -r "$1" luna@192.168.1.11:~/
-	fi
+  scp -r "$1" luna@$addres:~/
 fi
