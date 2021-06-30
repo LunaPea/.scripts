@@ -38,7 +38,7 @@ cd yay
 makepkg -si --noconfirm
 rm -rf ~/yay
 yay --save --answerclean N --answerdiff N 
-yay --noconfirm --cleanafter -S noto-fonts xorg-mkfontscale xorg-server xorg-xinit xorg-xinput xorg-xsetroot xcape mpv rxvt-unicode urxvt-perls urxvt-resize-font-git unclutter sxiv zaread-git scrot rofi rofi-greenclip rofi-bluetooth-git rofi-calc pulseaudio pulseaudio-bluetooth pulseaudio-control progress polybar playerctl pidswallow pavucontrol pamixer pa_volume-git neovim man-db kdeconnect jq inotify-tools htop firefox exa dunst btops-git bspwm networkmanager sxhkd python-pip nerd-fonts-jetbrains-mono ttf-jetbrains-mono dash ntfs-3g brightnessctl
+yay --noconfirm --cleanafter -S noto-fonts xorg-mkfontscale xorg-server xorg-xinit xorg-xinput xorg-xsetroot xcape mpv rxvt-unicode urxvt-perls urxvt-resize-font-git unclutter sxiv zaread-git scrot rofi rofi-greenclip rofi-bluetooth-git rofi-calc pulseaudio pulseaudio-bluetooth pulseaudio-control progress polybar playerctl pidswallow pavucontrol pamixer pa_volume-git neovim man-db kdeconnect jq inotify-tools htop firefox exa dunst btops-git bspwm networkmanager sxhkd python-pip nerd-fonts-jetbrains-mono ttf-jetbrains-mono dash ntfs-3g brightnessctl mesa xf86-video-intel
 pip install pynvim
 git clone https://www.github.com/LunaPea/.dotfiles
 git clone https://www.github.com/LunaPea/.scripts
