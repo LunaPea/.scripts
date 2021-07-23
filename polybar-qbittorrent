@@ -12,7 +12,7 @@ PATH=os.path.realpath(__file__)
 # Config
 username='luna'
 password='141453'
-host='192.168.1.50'
+host='192.168.1.19'
 port='8080'
 ####
 
