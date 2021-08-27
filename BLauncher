@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mcdir=/home/luna/Games/.minecraft
+mcdir=/home/wera/Games/.minecraft
 . $mcdir/BLauncher.config
 
 config (){
@@ -50,7 +50,7 @@ launch (){
 		-cp "$libraries"\
 		$(cat $file | jq --raw-output '.mainClass')\
 		--tweakClass optifine.OptiFineTweaker\
-		--username Luna\
+		--username Wera\
 		--version $version\
 		--gameDir .\
 		--assetsDir assets\
@@ -74,7 +74,7 @@ dump_launch_options (){
 	echo "	-cp "$libraries"" >> ~/launch_options.txt
 	echo "	$(cat $file | jq --raw-output '.mainClass')" >> ~/launch_options.txt
 	echo "	--tweakClass optifine.OptiFineTweaker" >> ~/launch_options.txt
-	echo "	--username Luna" >> ~/launch_options.txt
+	echo "	--username Wera" >> ~/launch_options.txt
 	echo "	--version $version" >> ~/launch_options.txt
 	echo "	--gameDir ." >> ~/launch_options.txt
 	echo "	--assetsDir assets" >> ~/launch_options.txt

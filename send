@@ -7,7 +7,7 @@ elif [ $hostname == "arch-dell" ]; then
 fi
 
 if [ "$#" -ne 1 ]; then
-  scp -r "$1" "luna@$addres:$2"
+  scp -r "$1" "wera@$addres:$2"
 else
-  scp -r "$1" luna@$addres:~/
+  scp -r "$1" wera@$addres:~/
 fi
