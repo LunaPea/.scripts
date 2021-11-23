@@ -17,7 +17,7 @@ battery=$(upower --dump | grep "JBL TUNE660NC" --after-context 8 | grep percenta
 battery=${battery#"    percentage:          "}
 battery="$battery%"
 
-case "$(printf "quick connect/disconnect\n$profile\n$battery\nbluetooth manager" | rofi -dmenu -l 3 -i -p "bluetooth menu" -width 20)" in
+case "$(printf "quick connect/disconnect\n$profile\n$battery\nbluetooth manager" | rofi -dmenu -l 4 -i -p "bluetooth menu" -width 20)" in
 	"quick connect/disconnect") if bluetoothctl info 88:D0:39:6B:77:2B | grep -q "Connected: no"; then
 		bluetoothctl connect 88:D0:39:6B:77:2B
 	else
