@@ -12,7 +12,12 @@ profile=$(pactl list cards | grep bluez_card.88_D0_39_6B_77_2B --after-context 2
 profile=${profile#"	Active Profile: "}
 profile=${profile%"-aac"}
 profile=${profile%"-msbc"}
-case "$(printf "quick connect/disconnect\n$profile\nbluetooth manager" | rofi -dmenu -l 3 -i -p "bluetooth menu" -width 20)" in
+
+battery=$(upower --dump | grep "JBL TUNE660NC" --after-context 8 | grep percentage)
+battery=${battery#"    percentage:          "}
+battery="$battery%"
+
+case "$(printf "quick connect/disconnect\n$profile\n$battery\nbluetooth manager" | rofi -dmenu -l 3 -i -p "bluetooth menu" -width 20)" in
 	"quick connect/disconnect") if bluetoothctl info 88:D0:39:6B:77:2B | grep -q "Connected: no"; then
 		bluetoothctl connect 88:D0:39:6B:77:2B
 	else
