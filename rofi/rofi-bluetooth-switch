@@ -23,8 +23,6 @@ case "$(printf "quick connect/disconnect\n$profile\n$battery\nbluetooth manager"
 	else
 		bluetoothctl disconnect 88:D0:39:6B:77:2B
 		fi ;;
-	"battery level") battery_level=$(bluetooth-headset-battery-level 88:D0:39:6B:77:2B.1)
-		rofi -dmenu -p "${battery_level#"Battery level for 88:D0:39:6B:77:2B is "}" -l 0 -width 5 ;;
 	"a2dp-sink") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B headset-head-unit ;;
 	"headset-head-unit") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B a2dp-sink ;;
 	"bluetooth manager") rofi-bluetooth ;;
