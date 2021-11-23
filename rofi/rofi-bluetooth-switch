@@ -8,10 +8,11 @@ if ! bluetoothctl show | grep -q "Powered: yes"; then
 	fi
 fi
 
-profile=$(pacmd list-cards | grep bluez_card.88_D0_39_6B_77_2B --context 19 | grep 'active profile')
-profile=${profile#"	active profile: <"}
-profile=${profile%">"}
-case "$(printf "quick connect/disconnect\nbattery level\n$profile\nbluetooth manager" | rofi -dmenu -l 4 -i -p "bluetooth menu" -width 20)" in
+profile=$(pactl list cards | grep bluez_card.88_D0_39_6B_77_2B --after-context 27 | grep 'Active Profile')
+profile=${profile#"	Active Profile: "}
+profile=${profile%"-aac"}
+profile=${profile%"-msbc"}
+case "$(printf "quick connect/disconnect\n$profile\nbluetooth manager" | rofi -dmenu -l 3 -i -p "bluetooth menu" -width 20)" in
 	"quick connect/disconnect") if bluetoothctl info 88:D0:39:6B:77:2B | grep -q "Connected: no"; then
 		bluetoothctl connect 88:D0:39:6B:77:2B
 	else
@@ -19,7 +20,7 @@ case "$(printf "quick connect/disconnect\nbattery level\n$profile\nbluetooth man
 		fi ;;
 	"battery level") battery_level=$(bluetooth-headset-battery-level 88:D0:39:6B:77:2B.1)
 		rofi -dmenu -p "${battery_level#"Battery level for 88:D0:39:6B:77:2B is "}" -l 0 -width 5 ;;
-	"a2dp_sink") pacmd set-card-profile bluez_card.88_D0_39_6B_77_2B headset_head_unit ;;
-	"headset_head_unit") pacmd set-card-profile bluez_card.88_D0_39_6B_77_2B a2dp_sink ;;
+	"a2dp-sink") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B headset-head-unit ;;
+	"headset-head-unit") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B a2dp-sink ;;
 	"bluetooth manager") rofi-bluetooth ;;
 esac
