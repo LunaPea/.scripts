@@ -1,2 +1,2 @@
 #!/bin/sh
-echo $(rofi -dmenu -p "password")
+echo $(rofi -dmenu -password -p "password")
