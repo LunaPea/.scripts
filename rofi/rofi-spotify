@@ -45,6 +45,8 @@ def player_menu():
                     mp.player.Previous()
         else:
             break
+        time.sleep(0.25)
+
 for player in players_ids:
     mp = pympris.MediaPlayer(player, bus)
     if mp.root.Identity == "Spotify":
