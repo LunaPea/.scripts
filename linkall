@@ -20,3 +20,5 @@ ln -s ~/.scripts/screenshot ~/.local/bin/
 ln -s ~/.scripts/prompt ~/.local/bin/
 ln -s ~/.scripts/samedir ~/.local/bin/
 ln -s ~/.scripts/notflix ~/.local/bin/
+ln -s ~/.scripts/nvim-open ~/.local/bin
+ln -s ~/.scripts/nvim-close ~/.local/bin
