@@ -8,7 +8,7 @@ if ! bluetoothctl show | grep -q "Powered: yes"; then
 	fi
 fi
 
-profile=$(pactl list cards | grep bluez_card.88_D0_39_6B_77_2B --after-context 27 | grep 'Active Profile')
+profile=$(pactl list cards | grep bluez_card.88_D0_39_6B_77_2B --after-context 28 | grep 'Active Profile')
 profile=${profile#"	Active Profile: "}
 profile=${profile%"-aac"}
 profile=${profile%"-msbc"}

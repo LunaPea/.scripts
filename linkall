@@ -13,8 +13,10 @@ ln -s ~/.scripts/rofi/rofi-search ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-todo ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-mount ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-umount ~/.local/bin/
+ln -s ~/.scripts/rofi/rofi-spotify ~/.local/bin/
 ln -s ~/.scripts/send ~/.local/bin/
 ln -s ~/.scripts/vimv ~/.local/bin/
 ln -s ~/.scripts/screenshot ~/.local/bin/
 ln -s ~/.scripts/prompt ~/.local/bin/
 ln -s ~/.scripts/samedir ~/.local/bin/
+ln -s ~/.scripts/notflix ~/.local/bin/

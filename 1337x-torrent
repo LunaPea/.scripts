@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+import os
+import sys
+from rofi import Rofi
+import re
+
+r = Rofi()
+if len(sys.argv) < 2:
+    torrent = r.text_entry(
+        "Torrent",
+        lines=1,)
+elif sys.argv[1] == "":
+    torrent = r.text_entry(
+        "Torrent",
+        lines=1,)
+else:
+    torrent = " ".join(sys.argv[1:])
+
+print(torrent)
+
+torrent = torrent.replace(" ", "+")
+html = os.popen('''curl -s "https://1337x.to/search/{}/1/"'''.format(torrent)).read()
+print(html)
+html_orginal = html
+# get all search results and put them in a list
+torrents = []
+offset = 18
+while html.find("<a href=\"/torrent/") != -1:
+    start = html.find("<a href=\"/torrent/")
+    end = html.find(">", start + 1)
+    torrents.append(html[start + offset:end-2])
+    html = html[end:]
+
+# get seeders and leechers
+formated_torrents = []
+for torrent in torrents:
+    html = html_orginal
+    location = html.find(torrent)
+    html = html[location:]
+    start = html.find("seeds")
+    end = html.find("</td>", start)
+    seeders = html[start + 7:end]
+    start = html.find("leeches")
+    end = html.find("</td>", start)
+    leechers = html[start + 9:end]
+    start = html.find("size mob-")
+    start = html.find(">", start)
+    end = html.find("<span", start)
+    size = html[start + 1:end]
+    formated_torrents.append([torrent, seeders, leechers, size])
+
+# sort by seeders
+formated_torrents.sort(key=lambda x: int(x[1]), reverse=True)
+# convert torrents to string
+string_torrents = []
+for torrent in formated_torrents:
+    # show torrent name without numbers
+    torrent_name = torrent[0].split("/")[-1]
+    # [seeds] [leechers] torrent_name
+    string_torrents.append("[{}] [{}] [{}] {}".format(torrent[1], torrent[2], torrent[3], torrent_name))
+
+torrent_choice = r.select("Torrents", string_torrents)
+if torrent_choice == (-1, -1):
+    exit()
+torrent_choice = torrents[torrent_choice[0]]
+
+html = os.popen('''curl -s "https://1337x.to/torrent/{}/"'''.format(torrent_choice)).read()
+start = html.find("magnet:?")
+end = html.find("\"", start + 1)
+magnet = html[start:end]
+
+ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+# get list of files in torrent
+files = os.popen('''peerflix "{}" -l'''.format(magnet)).read()
+# remove the color codes
+files = ansi_escape.sub('', files)
+files = files.split("\n")[1:]
+files_formated = []
+for file in files:
+    if file.strip() == "":
+        break
+    files_formated.append(file.strip())
+while True:
+    file_choice = r.select("File", files_formated)[0]
+    if file_choice == -1:
+        exit()
+    os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))

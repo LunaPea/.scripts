@@ -17,6 +17,7 @@ events = (uinput.ABS_X + (-5000, 5000, 0, 0), uinput.ABS_Y + (-3000, 4500, 0, 0)
         uinput.BTN_TL, uinput.BTN_TR, uinput.BTN_START, uinput.BTN_SELECT, uinput.BTN_TL2, uinput.BTN_TR2, uinput.BTN_NORTH, uinput.BTN_SOUTH, uinput.BTN_EAST, uinput.BTN_WEST, uinput.BTN_THUMBL, uinput.BTN_THUMBR
         )
 device = uinput.Device(events)
+keyboardd = uinput.Device((uinput.KEY_R, uinput.KEY_LEFTALT))
 
 def key_press(key): # toggle mouse movement
     global stop_mouse
@@ -31,7 +32,7 @@ keyboard.on_press(key_press)
 def get_mouse_event(): 
     global x
     global y
-    speed = 200
+    speed = 2000000
     i = 0
     pX = 0
     pY = 0
@@ -46,7 +47,7 @@ def get_mouse_event():
             X = int((x*speed+pX)/2)
             Y = int((y*speed+pY)/2)
             device.emit(uinput.ABS_X, X)
-            device.emit(uinput.ABS_Y, Y)
+            device.emit(uinput.ABS_Y, -Y)
             pX = X
             pY = Y
             print(X,Y)
@@ -56,13 +57,10 @@ def mouse_move():
     j = 0
     global x
     global y
-    global Z
-    Z = 0
     pX = 0
     pY = 0
     while True:
         time.sleep(0.01)
-        device.emit(uinput.ABS_RX, Z)
         if x == pX and y == pY:
             i += 1
             if i > 2:
@@ -80,13 +78,13 @@ def mouse_no_move():
             mouse2.move(10000,10000)
 
 def on_click(x, y, button, pressed):
-    global Z
     if button == mouse.Button.right and pressed and stop_mouse:
-        Z = 100
+        keyboardd.emit(uinput.KEY_LEFTALT, 1)
     if button == mouse.Button.left and pressed and stop_mouse:
-        Z = -100
+        keyboardd.emit(uinput.KEY_R, 1)
     if not pressed:
-        Z = 0
+        keyboardd.emit(uinput.KEY_R, 0)
+        keyboardd.emit(uinput.KEY_LEFTALT, 0)
  
 def on_scroll(x, y, dx, dy):
     pass

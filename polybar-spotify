@@ -1,0 +1,36 @@
+#!/bin/sh
+
+function status {
+	case "$(playerctl -l 2> /dev/null | grep spotify)" in
+		spotify)
+			artist=$(playerctl metadata --player=spotify artist)
+			title=$(playerctl metadata --player=spotify title)
+			icon=''
+			artist="%{A3:playerctl previous --player=spotify:}$artist%{A}"
+			title="%{A3:playerctl next --player=spotify:}$title%{A}"
+			
+			if [ "$(playerctl status --player=spotify)" = "Playing" ]; then
+				icon="%{F#1db954}$icon%{F-}"
+			else
+				icon="%{F#808080}$icon%{F-}"
+			fi
+			# if any part of the text is left clicked, play/pause
+			text="$icon $artist - $title"
+			text="%{A1:playerctl -p spotify play-pause:}$text%{A}"
+			# middle click to go forward then back
+			text="%{A2:playerctl -p spotify next; playerctl -p spotify previous :}$text%{A}"
+
+			separator="asasdasd"
+			len=${#text}
+			# insert separator in the middle of text
+			# text="${text:0:$((len/2))}$separator${text:$((len/2)):$len}"
+			echo "$text"
+			
+			;;
+		*)
+			echo ""
+			;;
+	esac
+}
+
+status
