@@ -16,13 +16,15 @@ profile=${profile%"-msbc"}
 battery=$(upower --dump | grep "JBL TUNE660NC" --after-context 8 | grep percentage)
 battery=${battery#"    percentage:          "}
 battery="$battery%"
+connection_status="disconnected"
 
-case "$(printf "quick connect/disconnect\nbluetooth manager\n$profile\n$battery" | rofi -dmenu -l 4 -i -p "bluetooth menu" -width 20)" in
-	"quick connect/disconnect") if bluetoothctl info 88:D0:39:6B:77:2B | grep -q "Connected: no"; then
-		bluetoothctl connect 88:D0:39:6B:77:2B
-	else
-		bluetoothctl disconnect 88:D0:39:6B:77:2B
-		fi ;;
+if bluetoothctl info | grep -q "Connected: yes"; then
+	connection_status="connected"
+fi
+
+case "$(printf "quick connect/disconnect ($connection_status)\nbluetooth manager\n$profile\n$battery" | rofi -dmenu -l 4 -i -p "bluetooth menu" -width 20)" in
+	"quick connect/disconnect (connected)") bluetoothctl disconnect 88:D0:39:6B:77:2B ;;
+	"quick connect/disconnect (disconnected)") bluetoothctl connect 88:D0:39:6B:77:2B ;;
 	"a2dp-sink") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B headset-head-unit ;;
 	"headset-head-unit") pactl set-card-profile bluez_card.88_D0_39_6B_77_2B a2dp-sink ;;
 	"bluetooth manager") rofi-bluetooth ;;
