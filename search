@@ -6,7 +6,7 @@ if [ -z "$search" ]; then
     exit
 fi
 if [[ $search == "?" ]]; then
-	search=$(cat ~/.cache/search-hist | rofi -dmenu -p "Search")
+	search=$(tac ~/.cache/search-hist | rofi -dmenu -p "Search")
 fi
 if [ -z "$search" ]; then
     exit
@@ -20,7 +20,7 @@ if [ $? -eq 0 ]; then
     sed -i "/$search/d" ~/.cache/search-hist
 fi
 # add the search to the top of history file
-echo "$search" | tee -a ~/.cache/search-hist
+echo "$search" >> ~/.cache/search-hist
 
 # get the all the words except the first one
 words=$(echo $search | cut -d " " -f 2-)

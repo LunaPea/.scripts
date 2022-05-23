@@ -18,7 +18,7 @@ battery=${battery#"    percentage:          "}
 battery="$battery%"
 connection_status="disconnected"
 
-if bluetoothctl info | grep -q "Connected: yes"; then
+if bluetoothctl info | grep -q "Connected: yes" && bluetoothctl info | grep -q "JBL"; then
 	connection_status="connected"
 fi
 

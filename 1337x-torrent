@@ -85,3 +85,4 @@ while True:
     if file_choice == -1:
         exit()
     os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))
+    # os.system('''webtorrent "{}" --select {} -o ~/.cache/peerflix/ --mpv --player-args=--no-input-default-bindings'''.format(magnet, file_choice))
