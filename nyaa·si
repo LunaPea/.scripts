@@ -5,6 +5,7 @@ import re
 from rofi import Rofi
 
 r = Rofi()
+previous_selection = None
 
 def get_torrent_from_user(torrent):
     torrent = torrent.replace(" ", "+")
@@ -60,9 +61,10 @@ elif sys.argv[1] == "-last":
     f = open(os.path.expanduser("~/.cache/nyaa.last"), "r")
     exec(f.readline())
     exec(f.readline())
+    f.close()
     magnet = torrent[1]
     r.error("Last file: " + last_file)
-    f.close()
+    previous_selection = last_file
 else:
     torrent = " ".join(sys.argv[1:])
     torrent, magnet = get_torrent_from_user(torrent)
@@ -81,9 +83,17 @@ for file in files:
         break
     files_formated.append(file.strip())
 while True:
-    file_choice = r.select("File", files_formated)[0]
+    tmp_files_formated = files_formated.copy()
+    if previous_selection != None:
+        tmp_files_formated.insert(0, previous_selection)
+        previous_selection_index = int(previous_selection.split(" ")[0])
+        if previous_selection_index+1 < len(files_formated):
+            tmp_files_formated.insert(1, files[previous_selection_index+1])
+    file_choice = r.select("File", tmp_files_formated)[0]
     if file_choice == -1:
         exit()
+    previous_selection = files_formated[file_choice]
+    file_choice = int(files_formated[file_choice].split(" ")[0])
     f = open(os.path.expanduser("~/.cache/nyaa.last"), "w")
     f.write("torrent = " + str(torrent))
     f.write('\nlast_file = "' + str(files[file_choice]) + '"')
