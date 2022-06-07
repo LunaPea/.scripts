@@ -75,7 +75,7 @@ files = os.popen('''peerflix "{}" -l'''.format(magnet)).read()
 # remove the color codes
 files = ansi_escape.sub('', files)
 files = files.split("\n")[1:]
-files_formated = []
+files_formated = ["all"]
 for file in files:
     if file.strip() == "":
         break
@@ -84,5 +84,9 @@ while True:
     file_choice = r.select("File", files_formated)[0]
     if file_choice == -1:
         exit()
-    os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))
-    # os.system('''webtorrent "{}" --select {} -o ~/.cache/peerflix/ --mpv --player-args=--no-input-default-bindings'''.format(magnet, file_choice))
+    if file_choice == 0:
+        os.system('''peerflix "{}" -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet))
+    else:
+        file_choice -= 1
+        os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))
+        # os.system('''webtorrent "{}" --select {} -o ~/.cache/peerflix/ --mpv --player-args=--no-input-default-bindings'''.format(magnet, file_choice))
