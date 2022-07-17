@@ -63,7 +63,6 @@ elif sys.argv[1] == "-last":
     exec(f.readline())
     f.close()
     magnet = torrent[1]
-    r.error("Last file: " + last_file)
     previous_selection = last_file
 else:
     torrent = " ".join(sys.argv[1:])
@@ -92,6 +91,7 @@ while True:
     file_choice = r.select("File", tmp_files_formated)[0]
     if file_choice == -1:
         exit()
+    file_choice = int(tmp_files_formated[file_choice].split(" ")[0])
     previous_selection = files_formated[file_choice]
     file_choice = int(files_formated[file_choice].split(" ")[0])
     f = open(os.path.expanduser("~/.cache/nyaa.last"), "w")

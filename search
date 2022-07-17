@@ -30,9 +30,9 @@ if [[ $search == " last++" ]]; then
 fi
 
 # check if the search matches a whole line from history file
-if grep -x "$search" ~/.cache/search-hist > /dev/null; then
+if grep -x "$(echo $search)" ~/.cache/search-hist > /dev/null; then
     # if it does, remove the line from history file
-    sed -i "/$search/d" ~/.cache/search-hist
+	sed -i "/$(echo $search)/d" ~/.cache/search-hist
 fi
 # add the search to the top of history file
 echo $search >> ~/.cache/search-hist
