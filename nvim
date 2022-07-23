@@ -1,3 +1,3 @@
 #!/bin/sh
 source /usr/share/nvm/init-nvm.sh
-nvim -c term
+nvim -c term\ fish
