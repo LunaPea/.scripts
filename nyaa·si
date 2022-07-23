@@ -98,4 +98,4 @@ while True:
     f.write("torrent = " + str(torrent))
     f.write('\nlast_file = "' + str(files[file_choice]) + '"')
     f.close()
-    os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))
+    os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings --no-resume-playback --slang=eng --alang=jpn'''.format(magnet, file_choice))
