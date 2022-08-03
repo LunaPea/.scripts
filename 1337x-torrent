@@ -75,18 +75,24 @@ files = os.popen('''peerflix "{}" -l'''.format(magnet)).read()
 # remove the color codes
 files = ansi_escape.sub('', files)
 files = files.split("\n")[1:]
-files_formated = ["all"]
+files_formated = []
 for file in files:
     if file.strip() == "":
         break
     files_formated.append(file.strip())
+
+previous_selection = None
 while True:
-    file_choice = r.select("File", files_formated)[0]
+    tmp_files_formated = files_formated.copy()
+    if previous_selection != None:
+        tmp_files_formated.insert(0, previous_selection)
+        previous_selection_index = int(previous_selection.split(" ")[0])
+        if previous_selection_index+1 < len(files_formated):
+            tmp_files_formated.insert(1, files[previous_selection_index+1])
+    file_choice = r.select("File", tmp_files_formated)[0]
     if file_choice == -1:
         exit()
-    if file_choice == 0:
-        os.system('''peerflix "{}" -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet))
-    else:
-        file_choice -= 1
-        os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings'''.format(magnet, file_choice))
-        # os.system('''webtorrent "{}" --select {} -o ~/.cache/peerflix/ --mpv --player-args=--no-input-default-bindings'''.format(magnet, file_choice))
+    file_choice = int(tmp_files_formated[file_choice].split(" ")[0])
+    previous_selection = files_formated[file_choice]
+    file_choice = int(files_formated[file_choice].split(" ")[0])
+    os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings --no-resume-playback --slang=eng'''.format(magnet, file_choice))
