@@ -1,0 +1,4 @@
+shift + n
+	playerctl -p spotify next
+shift + p
+	playerctl -p spotify previous
