@@ -1,7 +1,7 @@
 #!/bin/sh
 
 while true; do
-	if xdotool getwindowfocus getwindowname | grep "Spotify" >/dev/null; then
+	if xdotool getwindowfocus getwindowclassname | grep "Spotify" >/dev/null; then
 		if ! pgrep -f "sxhkd -c $HOME/.scripts/spotify-sxhkd" >/dev/null; then
 			sxhkd -c $HOME/.scripts/spotify-sxhkd &
 		fi
