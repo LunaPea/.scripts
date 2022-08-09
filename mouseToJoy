@@ -11,9 +11,9 @@ import os
 import mouse as mouse2
 
 stop_mouse = False
-mice = open( "/dev/input/mouse0", "rb" );
+mice = open( "/dev/input/mouse1", "rb" );
 
-events = (uinput.ABS_X + (-5000, 5000, 0, 0), uinput.ABS_Y + (-3000, 4500, 0, 0), uinput.ABS_RX + (-100, 100, 0, 0), uinput.ABS_RY + (-100, 100, 0, 0),
+events = (uinput.ABS_X + (-5000000, 5000000, 0, 0), uinput.ABS_Y + (-3000000, 4500000, 0, 0), uinput.ABS_RX + (-100, 100, 0, 0), uinput.ABS_RY + (-100, 100, 0, 0),
         uinput.BTN_TL, uinput.BTN_TR, uinput.BTN_START, uinput.BTN_SELECT, uinput.BTN_TL2, uinput.BTN_TR2, uinput.BTN_NORTH, uinput.BTN_SOUTH, uinput.BTN_EAST, uinput.BTN_WEST, uinput.BTN_THUMBL, uinput.BTN_THUMBR
         )
 device = uinput.Device(events)
