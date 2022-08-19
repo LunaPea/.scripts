@@ -6,34 +6,15 @@ if [ -z "$search" ]; then
     exit
 fi
 if [[ $search == "?" ]]; then
-	search=$(cat -E ~/.cache/search-hist | tac | xargs echo " last++\$" | tr \$ "\n" | rofi -dmenu -p "Search")
+	search=$(cat ~/.cache/search-hist | tac | rofi -dmenu -p "Search")
 fi
 if [ -z "$search" ]; then
     exit
 fi
 
-UpANumber()
-{
-  local prefix number
-  if [[ $@ =~ ^(.*[^[:digit:]])([[:digit:]]+)$ ]]; then
-    prefix=${BASH_REMATCH[1]}
-    number=${BASH_REMATCH[2]}
-    printf '%s%s\n' "$prefix" "$(( number + 1 ))"
-  else
-    printf '%s\n' "$1"
-  fi
-}
+# delete a line that ONLY contains the search
+sed -i "/^$search$/d" ~/.cache/search-hist 
 
-
-if [[ $search == " last++" ]]; then
-	search=$(UpANumber $(tail ~/.cache/search-hist -n1))
-fi
-
-# check if the search matches a whole line from history file
-if grep -x "$(echo $search)" ~/.cache/search-hist > /dev/null; then
-    # if it does, remove the line from history file
-	sed -i "/$(echo $search)/d" ~/.cache/search-hist
-fi
 # add the search to the top of history file
 echo $search >> ~/.cache/search-hist
 
