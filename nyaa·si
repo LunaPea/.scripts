@@ -7,9 +7,11 @@ from rofi import Rofi
 r = Rofi()
 previous_selection = None
 
+
 def get_torrent_from_user(torrent):
     torrent = torrent.replace(" ", "+")
-    html = os.popen('''curl -s "https://nyaa.si/?f=0&c=0_0&s=seeders&o=desc&q={}"'''.format(torrent)).read()
+    html = os.popen(
+        '''curl -s "https://nyaa.si/?f=0&c=0_0&s=seeders&o=desc&q={}"'''.format(torrent)).read()
 
     torrents = []
     while True:
@@ -19,7 +21,8 @@ def get_torrent_from_user(torrent):
         end = html.find("</tr>", start)
         title = html[start:end].split('<a href="/view/')[-1].split("</a>")[0]
         title = title.split('">')[1]
-        magnet = html[start:end].split('<a href="magnet:?xt=urn:')[-1].split("</a>")[0]
+        magnet = html[start:end].split(
+            '<a href="magnet:?xt=urn:')[-1].split("</a>")[0]
         magnet = magnet.split('">')[0]
         magnet = "magnet:?xt=urn:" + magnet
         some_data = html[start:end].split('</a>')[-1].split('<td')
@@ -29,7 +32,8 @@ def get_torrent_from_user(torrent):
         downloads = some_data[5].split(">")[1].split("<")[0]
         category = html[start:end].split('alt="')[-1].split('"')[0]
         if category == "Anime - English-translated":
-            torrents.append([title, magnet, size, seeders, leechers, downloads])
+            torrents.append(
+                [title, magnet, size, seeders, leechers, downloads])
 
         html = html[end:]
 
@@ -37,7 +41,7 @@ def get_torrent_from_user(torrent):
 
     for torrent in torrents:
         torrents_formated.append(
-                "[{}] [{}] [{}] {}".format(torrent[3], torrent[4], torrent[2], torrent[0]))
+            "[{}] [{}] [{}] {}".format(torrent[3], torrent[4], torrent[2], torrent[0]))
 
     torrent_choice = r.select("Torrents", torrents_formated)
     if torrent_choice == (-1, -1):
@@ -46,6 +50,7 @@ def get_torrent_from_user(torrent):
     magnet = torrents[torrent_choice[0]][1]
     torrent = torrents[torrent_choice[0]]
     return torrent, magnet
+
 
 if len(sys.argv) < 2:
     torrent = r.text_entry(
@@ -99,3 +104,6 @@ while True:
     f.write('\nlast_file = "' + str(files[file_choice]) + '"')
     f.close()
     os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings --no-resume-playback --slang=eng --alang=jpn'''.format(magnet, file_choice))
+    f = open(os.path.expanduser("~/.cache/watch-history"), "a")
+    f.write(torrent[0] + files[file_choice] + "\n")
+    f.close()
