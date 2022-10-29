@@ -14,7 +14,7 @@ ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
 sed -ie 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 hwclock --systohc
 locale-gen
-echo 'LANG=en_US.UTF-8 > /etc/locale.conf'
+echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 echo 'arch-dell' > /etc/hostname
 echo '127.0.0.1	localhost
 ::1		localhost

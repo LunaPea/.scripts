@@ -1,10 +1,3 @@
 #!/bin/sh
 
-echo  				>> ~/Downloads/aria2c/LOG
-echo \# 			>> ~/Downloads/aria2c/LOG
-echo \# $(date) 	>> ~/Downloads/aria2c/LOG
-echo \# magnet: $@ 	>> ~/Downloads/aria2c/LOG
-echo \# 			>> ~/Downloads/aria2c/LOG
-echo  				>> ~/Downloads/aria2c/LOG
-
-kitty aria2c "$@" --bt-save-metadata --bt-prioritize-piece=head --on-bt-download-complete=~/.scripts/aria2dl-notify --dir ~/Downloads/aria2c/ --log ~/Downloads/aria2c/LOG
+kitty aria2c "$@" --bt-save-metadata --bt-prioritize-piece=head --on-bt-download-complete=~/.scripts/aria2dl-notify --dir ~/Downloads/aria2c/
