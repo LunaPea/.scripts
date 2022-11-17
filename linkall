@@ -11,6 +11,4 @@ ln -s ~/.scripts/rofi/rofi-umount ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-spotify ~/.local/bin/
 ln -s ~/.scripts/screenshot ~/.local/bin/
 ln -s ~/.scripts/prompt ~/.local/bin/
-ln -s ~/.scripts/nvim-open ~/.local/bin
-ln -s ~/.scripts/nvim-close ~/.local/bin
 ln -s ~/.scripts/search ~/.local/bin

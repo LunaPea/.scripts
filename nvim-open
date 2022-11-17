@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if $(nvr --remote --nostart > /dev/null); then
-	nvr --remote-tab "$@"
-else
-	nvim $@
-fi

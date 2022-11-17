@@ -1,2 +1,0 @@
-#!/bin/sh
-nvim -c "term fish -C cd\ ./\ \\#/term" # this mess makes it so the filename in tabline and lightline apears as term instead of a mess

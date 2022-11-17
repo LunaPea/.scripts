@@ -1,6 +1,0 @@
-#!/bin/sh
-
-if $(nvr --remote --nostart > /dev/null); then
-	nvr -c :q
-	exit 1
-fi
