@@ -5,6 +5,7 @@ from rofi import Rofi
 import re
 
 r = Rofi()
+
 if len(sys.argv) < 2:
     torrent = r.text_entry(
         "Torrent",
@@ -19,7 +20,8 @@ else:
 print(torrent)
 
 torrent = torrent.replace(" ", "+")
-html = os.popen('''curl -s "https://1337x.to/search/{}/1/"'''.format(torrent)).read()
+html = os.popen(
+    '''curl -s "https://1337x.to/search/{}/1/"'''.format(torrent)).read()
 print(html)
 html_orginal = html
 # get all search results and put them in a list
@@ -57,14 +59,16 @@ for torrent in formated_torrents:
     # show torrent name without numbers
     torrent_name = torrent[0].split("/")[-1]
     # [seeds] [leechers] torrent_name
-    string_torrents.append("[{}] [{}] [{}] {}".format(torrent[1], torrent[2], torrent[3], torrent_name))
+    string_torrents.append("[{}] [{}] [{}] {}".format(
+        torrent[1], torrent[2], torrent[3], torrent_name))
 
 torrent_choice = r.select("Torrents", string_torrents)
 if torrent_choice == (-1, -1):
     exit()
 torrent_choice = torrents[torrent_choice[0]]
 
-html = os.popen('''curl -s "https://1337x.to/torrent/{}/"'''.format(torrent_choice)).read()
+html = os.popen(
+    '''curl -s "https://1337x.to/torrent/{}/"'''.format(torrent_choice)).read()
 start = html.find("magnet:?")
 end = html.find("\"", start + 1)
 magnet = html[start:end]
@@ -83,16 +87,10 @@ for file in files:
 
 previous_selection = None
 while True:
-    tmp_files_formated = files_formated.copy()
-    if previous_selection != None:
-        tmp_files_formated.insert(0, previous_selection)
-        previous_selection_index = int(previous_selection.split(" ")[0])
-        if previous_selection_index+1 < len(files_formated):
-            tmp_files_formated.insert(1, files[previous_selection_index+1])
-    file_choice = r.select("File", tmp_files_formated)[0]
+    file_choice = r.select("File", files_formated,
+                           select=previous_selection)[0]
     if file_choice == -1:
         exit()
-    file_choice = int(tmp_files_formated[file_choice].split(" ")[0])
-    previous_selection = files_formated[file_choice]
     file_choice = int(files_formated[file_choice].split(" ")[0])
+    previous_selection = file_choice
     os.system('''peerflix "{}" -i {} -f ~/.cache/peerflix/ --mpv -- --no-input-default-bindings --no-resume-playback --slang=eng'''.format(magnet, file_choice))
