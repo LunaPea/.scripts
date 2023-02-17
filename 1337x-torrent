@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import os
+import sys
 from rofi import Rofi
 
 r = Rofi()
 
-torrent = r.text_entry(
-    "Torrent",
-    lines=1,)
+torrent = " ".join(sys.argv[1:])
 
 torrent = torrent.replace(" ", "+")
 html = os.popen(
