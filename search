@@ -27,35 +27,35 @@ echo $first_word
 case "$first_word" in
 	"1")
 		# search the 1337x
-		firefox "https://1337x.to/search/$words/1/"
+		$BROWSER "https://1337x.to/search/$words/1/"
 		;;
 	"rl")
 		# search the rutracker with linux games category
-		firefox "https://rutracker.org/forum/tracker.php?nm=$words&f=1992,2059"
+		$BROWSER "https://rutracker.org/forum/tracker.php?nm=$words&f=1992,2059"
 		;;
 	"r")
 		# search the rutracker
-		firefox "https://rutracker.org/forum/tracker.php?nm=$words"
+		$BROWSER "https://rutracker.org/forum/tracker.php?nm=$words"
 		;;
 	"a")
 		# search the archwiki
-		firefox "https://wiki.archlinux.org/index.php?search=$words"
+		$BROWSER "https://wiki.archlinux.org/index.php?search=$words"
  		;;
 	"h")
 		# input href
-		firefox "$words"
+		$BROWSER "$words"
 		;;
 	"o")
 		# search osu beatmaps
-		firefox "https://osu.ppy.sh/beatmapsets?m=0&q=$words"
+		$BROWSER "https://osu.ppy.sh/beatmapsets?m=0&q=$words"
 		;;
 	"y")
 		# search youtube
-		firefox "https://www.youtube.com/results?search_query=$words"
+		$BROWSER "https://www.youtube.com/results?search_query=$words"
 		;;
 	"w")
 		# wolfram alpha
-		firefox "https://www.wolframalpha.com/input/?i=$words"
+		$BROWSER "https://www.wolframalpha.com/input/?i=$words"
 		;;
 	"t")
 		# search and download torrent
@@ -67,6 +67,6 @@ case "$first_word" in
 	"") exit ;;
 	*)
 		# search via duckduckgo
-		firefox "https://duckduckgo.com/$words"
+		$BROWSER "https://duckduckgo.com/$words"
 		;;
 esac
