@@ -6,34 +6,36 @@ import time
 import struct
 import uinput
 import keyboard
-import time
-import os
 import mouse as mouse2
 
 stop_mouse = False
-mice = open( "/dev/input/mouse1", "rb" );
+mice = open("/dev/input/mouse1", "rb")
 
-events = (uinput.ABS_X + (-5000000, 5000000, 0, 0), uinput.ABS_Y + (-3000000, 4500000, 0, 0), uinput.ABS_RX + (-100, 100, 0, 0), uinput.ABS_RY + (-100, 100, 0, 0),
-        uinput.BTN_TL, uinput.BTN_TR, uinput.BTN_START, uinput.BTN_SELECT, uinput.BTN_TL2, uinput.BTN_TR2, uinput.BTN_NORTH, uinput.BTN_SOUTH, uinput.BTN_EAST, uinput.BTN_WEST, uinput.BTN_THUMBL, uinput.BTN_THUMBR
+events = (
+    uinput.ABS_X + (-100, 100, 0, 0), uinput.ABS_Y + (-100, 100, 0, 0),
+    uinput.ABS_RX + (-1000, 1000, 0, 0), uinput.ABS_RY + (-1000, 1000, 0, 0),
+    uinput.BTN_TL, uinput.BTN_TR, uinput.BTN_START, uinput.BTN_SELECT,
+    uinput.BTN_TL2, uinput.BTN_TR2, uinput.BTN_DPAD_DOWN, uinput.BTN_DPAD_LEFT,
+    uinput.BTN_DPAD_RIGHT, uinput.BTN_DPAD_UP, uinput.BTN_THUMBL,
+    uinput.BTN_THUMBR, uinput.BTN_B, uinput.BTN_A, uinput.BTN_X, uinput.BTN_Y
         )
 device = uinput.Device(events)
 keyboardd = uinput.Device((uinput.KEY_R, uinput.KEY_LEFTALT))
 
-def key_press(key): # toggle mouse movement
+
+def key_press(key):  # toggle mouse movement
     global stop_mouse
-    if key.name == "f1":
-        if stop_mouse == True:
-            stop_mouse = False
-        else:
-            stop_mouse = True
+    if key.name == "|":
+        stop_mouse = not stop_mouse
+
 
 keyboard.on_press(key_press)
 
-def get_mouse_event(): 
+
+def get_mouse_event():
     global x
     global y
-    speed = 2000000
-    i = 0
+    speed = 200
     pX = 0
     pY = 0
     x = 0
@@ -41,20 +43,20 @@ def get_mouse_event():
 
     while True:
         if stop_mouse:
-            buf = mice.read(3);
-            x,y = struct.unpack( "bb", buf[1:] );
-            
+            buf = mice.read(3)
+            x, y = struct.unpack("bb", buf[1:])
+
             X = int((x*speed+pX)/2)
             Y = int((y*speed+pY)/2)
-            device.emit(uinput.ABS_X, X)
-            device.emit(uinput.ABS_Y, -Y)
+            device.emit(uinput.ABS_RX, X)
+            device.emit(uinput.ABS_RY, -Y)
             pX = X
             pY = Y
-            print(X,Y)
+            print(X, Y)
+
 
 def mouse_move():
     i = 0
-    j = 0
     global x
     global y
     pX = 0
@@ -64,42 +66,53 @@ def mouse_move():
         if x == pX and y == pY:
             i += 1
             if i > 2:
-                device.emit(uinput.ABS_X, 0)
-                device.emit(uinput.ABS_Y, 0)
+                device.emit(uinput.ABS_RX, 0)
+                device.emit(uinput.ABS_RY, 0)
         else:
             i = 0
         pX = x
         pY = y
 
+
 def mouse_no_move():
     global stop_mouse
     while True:
-        if stop_mouse == True:
-            mouse2.move(10000,10000)
+        if stop_mouse:
+            mouse2.move(10000, 10000)
+
 
 def on_click(x, y, button, pressed):
     if button == mouse.Button.right and pressed and stop_mouse:
-        keyboardd.emit(uinput.KEY_LEFTALT, 1)
+        device.emit(uinput.BTN_TR2, 1)
+    else:
+        device.emit(uinput.BTN_TR2, 0)
+
     if button == mouse.Button.left and pressed and stop_mouse:
-        keyboardd.emit(uinput.KEY_R, 1)
+        device.emit(uinput.BTN_X, 1)
     if not pressed:
-        keyboardd.emit(uinput.KEY_R, 0)
-        keyboardd.emit(uinput.KEY_LEFTALT, 0)
- 
+        device.emit(uinput.BTN_X, 0)
+
+    if button == mouse.Button.middle and pressed and stop_mouse:
+        device.emit(uinput.BTN_THUMBR, 1)
+    if not pressed:
+        device.emit(uinput.BTN_THUMBR, 0)
+
+
 def on_scroll(x, y, dx, dy):
     pass
+
+
 def on_move(x, y):
     pass
 
-   
 
 listener = mouse.Listener(
-on_move=on_move,
-on_click=on_click,
-on_scroll=on_scroll)
+    on_move=on_move,
+    on_click=on_click,
+    on_scroll=on_scroll)
 listener.start()
 
 
-Thread(target = get_mouse_event).start()
-Thread(target = mouse_move).start()
-Thread(target = mouse_no_move).start()
+Thread(target=get_mouse_event).start()
+Thread(target=mouse_move).start()
+Thread(target=mouse_no_move).start()
