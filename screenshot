@@ -11,7 +11,7 @@ sleep 0.2
 
 if test -f /tmp/maim_screenshot_to_text.png; then
 	mogrify -modulate 100,0 -resize 400% /tmp/maim_screenshot_to_text.png 
-	tesseract /tmp/maim_screenshot_to_text.png /tmp/tesseract_screenshot &> /dev/null
+	tesseract -l $(printf "eng\\njpn" | rofi -dmenu -l 2) /tmp/maim_screenshot_to_text.png /tmp/tesseract_screenshot &> /dev/null
 	xclip -selection clipboard -i /tmp/tesseract_screenshot.txt
 	rm /tmp/tesseract_screenshot.txt /tmp/maim_screenshot_to_text.png
 	exit
