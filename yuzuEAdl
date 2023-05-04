@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -f ~/Games/yuzu/Linux-Yuzu-EA-*.AppImage ]; then
+  on_machine_version=$(ls ~/Games/yuzu/Linux-Yuzu-EA-*.AppImage | rev | cut -d'.' -f2 | cut -d'-' -f1 | rev)
+else
+  on_machine_version=0
+fi
+on_github_version=$(curl -s https://api.github.com/repos/pineappleEA/pineapple-src/releases/latest | jq --raw-output '.assets[0].name' | rev | cut -d'.' -f2 | cut -d'-' -f1 | rev)
+
+if [ $on_github_version -gt $on_machine_version ]; then
+  rm ~/Games/yuzu/Linux-Yuzu-EA-*.AppImage
+  rm ~/Games/yuzu/yuzu
+  curl $(curl -s https://api.github.com/repos/pineappleEA/pineapple-src/releases/latest | jq --raw-output '.assets[0].browser_download_url') -OL --output-dir ~/Games/yuzu
+  chmod +x ~/Games/yuzu/Linux-Yuzu-EA-*.AppImage
+  ln -s $HOME/Games/yuzu/Linux-Yuzu-EA-*.AppImage $HOME/Games/yuzu/yuzu
+fi
