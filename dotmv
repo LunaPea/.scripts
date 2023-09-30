@@ -2,6 +2,7 @@
 
 currdir=$(pwd)
 mv "$currdir/$1" ~/.dotfiles/
-ln -s ~/.dotfiles/$1 "$currdir/${1%"/"}"
-link="ln -s ~/.dotfiles/$1 "~/.config/${1%"/"}""
+ln -s ~/.dotfiles/$1 "$currdir/"
+link="ln -s ~/.dotfiles/${1%/} "$(echo $currdir/ | sed "s:$HOME:~:")
+echo $link
 echo $link >> ~/.dotfiles/linkall
