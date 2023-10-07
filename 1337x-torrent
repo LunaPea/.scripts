@@ -53,7 +53,7 @@ for torrent in formated_torrents:
 torrent_choice = r.select("Torrents", string_torrents)
 if torrent_choice == (-1, -1):
     exit()
-torrent_choice = torrents[torrent_choice[0]]
+torrent_choice = formated_torrents[torrent_choice[0]][0]
 
 html = os.popen(
     '''curl -s "https://1337x.to/torrent/{}/"'''.format(torrent_choice)).read()
