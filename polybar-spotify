@@ -14,18 +14,14 @@ function status {
 			else
 				icon="%{F#808080}$icon%{F-}"
 			fi
-			# if any part of the text is left clicked, play/pause
 			text="$icon $artist - $title"
+
+			# left click - play/pause
 			text="%{A1:playerctl -p spotify play-pause:}$text%{A}"
-			# middle click to go forward then back
+			# middle click - go forward
 			text="%{A2:playerctl -p spotify next; playerctl -p spotify previous :}$text%{A}"
 
-			separator="asasdasd"
-			len=${#text}
-			# insert separator in the middle of text
-			# text="${text:0:$((len/2))}$separator${text:$((len/2)):$len}"
 			echo "$text"
-			
 			;;
 		*)
 			echo ""
