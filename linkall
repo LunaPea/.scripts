@@ -2,9 +2,7 @@
 mkdir -p ~/.local/bin
 ln -s ~/.scripts/0x0 ~/.local/bin/
 ln -s ~/.scripts/dotmv ~/.local/bin/
-ln -s ~/.scripts/rofi/rofi-bluetooth-switch ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-menu ~/.local/bin/
-ln -s ~/.scripts/rofi/rofi-mocp ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-mpris ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-mount ~/.local/bin/
 ln -s ~/.scripts/rofi/rofi-umount ~/.local/bin/
@@ -12,3 +10,6 @@ ln -s ~/.scripts/rofi/rofi-spotify ~/.local/bin/
 ln -s ~/.scripts/screenshot ~/.local/bin/
 ln -s ~/.scripts/prompt ~/.local/bin/
 ln -s ~/.scripts/search ~/.local/bin
+ln -s ~/.scripts/screenshare ~/.local/bin
+ln -s ~/.scripts/nyaa·si ~/.local/bin
+ln -s ~/.scripts/1337x-torrent ~/.local/bin
