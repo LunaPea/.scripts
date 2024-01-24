@@ -1,64 +1,44 @@
 #!/bin/sh
 
-search=$(echo "?" | rofi -dmenu -p "Search")
-# exit if search is empty
-if [ -z "$search" ]; then
-    exit
-fi
-if [[ $search == "?" ]]; then
-	search=$(cat ~/.cache/search-hist | tac | rofi -dmenu -p "Search")
-fi
+search=$(cat ~/.cache/search-hist | tac | rofi -dmenu -p "Search")
 if [ -z "$search" ]; then
     exit
 fi
 
-# delete a line that ONLY contains the search
+# delete a line that ONLY contains the search and no other text
 sed -i "/^$search$/d" ~/.cache/search-hist 
 
-# add the search to the top of history file
 echo $search >> ~/.cache/search-hist
 
-# get the all the words except the first one
 words=$(echo $search | cut -d " " -f 2-)
-# get the first word
 first_word=$(echo $search | cut -d " " -f 1)
-echo $first_word
 
 case "$first_word" in
 	"1")
-		# search the 1337x
 		$BROWSER "https://1337x.to/search/$words/1/"
 		;;
 	"rl")
-		# search the rutracker with linux games category
 		$BROWSER "https://rutracker.org/forum/tracker.php?nm=$words&f=1992,2059"
 		;;
 	"r")
-		# search the rutracker
 		$BROWSER "https://rutracker.org/forum/tracker.php?nm=$words"
 		;;
 	"a")
-		# search the archwiki
 		$BROWSER "https://wiki.archlinux.org/index.php?search=$words"
  		;;
 	"h")
-		# input href
 		$BROWSER "$words"
 		;;
 	"o")
-		# search osu beatmaps
 		$BROWSER "https://osu.ppy.sh/beatmapsets?m=0&q=$words"
 		;;
 	"y")
-		# search youtube
 		$BROWSER "https://www.youtube.com/results?search_query=$words"
 		;;
 	"w")
-		# wolfram alpha
 		$BROWSER "https://www.wolframalpha.com/input/?i=$words"
 		;;
 	"t")
-		# search and download torrent
 		1337x-torrent "$words"
 		;;
 	"n")
@@ -66,7 +46,6 @@ case "$first_word" in
 		;;
 	"") exit ;;
 	*)
-		# search via duckduckgo
-		$BROWSER "https://duckduckgo.com/$words"
+		$BROWSER "https://duckduckgo.com/$first_word $words"
 		;;
 esac
