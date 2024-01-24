@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-if pacmd list-cards | grep bluez_card.E8_D0_3C_97_58_13 --context 19 | grep 'active profile' | grep a2dp_sink
-then
-	pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 headset_head_unit
-elif pacmd list-cards | grep bluez_card.E8_D0_3C_97_58_13 --context 19 | grep 'active profile' | grep headset_head_unit
-then
-	pacmd set-card-profile bluez_card.E8_D0_3C_97_58_13 a2dp_sink
-fi
